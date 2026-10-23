@@ -338,7 +338,9 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
 
   useEffect(() => {
     if (!completed) return;
-    scrollToJoinPanel(document.getElementById("waitlist"));
+    scrollToJoinPanel(document.getElementById("join-profile-done"), {
+      focus: true,
+    });
   }, [completed]);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -368,7 +370,10 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
         inviteCta={copy.inviteCta}
         onInvite={() => shareJoinInvite(role)}
       >
-        <div className="relative z-10 w-full max-w-[560px] bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 xl:px-10 xl:py-12">
+        <div
+          id="join-profile-done"
+          className="relative z-10 w-full max-w-[560px] bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 xl:px-10 xl:py-12"
+        >
           <h3 className="max-w-[14ch] font-playfair text-[clamp(1.85rem,6.5vw,2.4rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em]">
             Profile <span className="italic">complete</span>
           </h3>
@@ -407,6 +412,7 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
       </h3>
 
       <form
+        id="join-profile-form"
         onSubmit={onSubmit}
         className="relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 xl:px-10 xl:py-11"
       >

@@ -37,8 +37,11 @@ export function shareJoinInvite(role: JoinRole) {
   }
 }
 
-/** Smooth-scroll the join panel into view without fighting layout thrash. */
-export function scrollToJoinPanel(node: HTMLElement | null) {
+/** Smooth-scroll a join target into view and optionally focus a field. */
+export function scrollToJoinPanel(
+  node: HTMLElement | null,
+  options?: { focus?: boolean },
+) {
   if (!node) return;
 
   requestAnimationFrame(() => {
@@ -53,5 +56,14 @@ export function scrollToJoinPanel(node: HTMLElement | null) {
 
     const top = node.getBoundingClientRect().top + window.scrollY - lift * 0.35;
     window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+
+    if (!options?.focus) return;
+
+    const focusable = node.querySelector<HTMLElement>(
+      'input:not([type="hidden"]), textarea, select, button[type="submit"]',
+    );
+    window.setTimeout(() => {
+      focusable?.focus({ preventScroll: true });
+    }, 320);
   });
 }

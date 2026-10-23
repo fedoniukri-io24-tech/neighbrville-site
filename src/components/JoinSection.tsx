@@ -87,8 +87,13 @@ function JoinSectionInner() {
   useEffect(() => {
     if (!expanded) return;
     const timer = window.setTimeout(() => {
-      scrollToJoinPanel(panelRef.current);
-    }, 280);
+      // Always land on the active form — never the "Thank you" left column
+      const target =
+        step === "profile"
+          ? document.getElementById("join-profile-form")
+          : document.getElementById("join-waitlist-form") ?? panelRef.current;
+      scrollToJoinPanel(target, { focus: true });
+    }, 300);
     return () => window.clearTimeout(timer);
   }, [expanded, role, step]);
 
@@ -242,6 +247,7 @@ function JoinSectionInner() {
 
                 <div className="relative flex min-h-0 flex-1 w-full items-start justify-center px-[var(--page-gutter-x)] pb-2 lg:h-full lg:items-center lg:px-10 lg:pb-0 xl:px-14">
                   <form
+                    id="join-waitlist-form"
                     onSubmit={onWaitlistSubmit}
                     className="relative z-10 flex w-full max-w-[520px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 lg:px-8 lg:py-9 xl:px-10 xl:py-11"
                   >
