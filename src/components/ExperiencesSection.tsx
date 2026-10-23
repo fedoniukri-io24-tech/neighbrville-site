@@ -206,7 +206,7 @@ export function ExperiencesSection() {
         }`}
       >
         <div className="page-shell page-x">
-          <p className="text-center font-inter text-[11px] uppercase tracking-[0.16em] text-cream">
+          <p className="text-left font-inter text-[11px] uppercase tracking-[0.16em] text-cream">
             Find something that feels like you
           </p>
           <h2 className="mt-3 max-w-[18ch] text-left font-playfair text-[clamp(1.7rem,7.6vw,2.45rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] text-cream">
@@ -284,7 +284,7 @@ export function ExperiencesSection() {
             {[0, 1].map((copy) => (
               <p
                 key={copy}
-                className="flex items-center font-playfair text-[clamp(1.7rem,8vw,2.4rem)] italic uppercase leading-none tracking-[-0.04em] text-white"
+                className="flex items-center font-playfair text-[clamp(1.7rem,8vw,2.4rem)] italic uppercase leading-none tracking-[-0.04em] text-[#ffffff]"
               >
                 {marqueeItems.map((item) => (
                   <span key={`${copy}-${item}`} className="inline-flex items-center">
@@ -436,7 +436,7 @@ export function ExperiencesSection() {
             {[0, 1].map((copy) => (
               <p
                 key={copy}
-                className="flex items-center font-playfair text-[clamp(1.6rem,3.4vw,3.15rem)] italic uppercase leading-none tracking-[-0.04em] text-white"
+                className="flex items-center font-playfair text-[clamp(1.6rem,3.4vw,3.15rem)] italic uppercase leading-none tracking-[-0.04em] text-[#ffffff]"
               >
                 {marqueeItems.map((item) => (
                   <span key={`${copy}-${item}`} className="inline-flex items-center">
