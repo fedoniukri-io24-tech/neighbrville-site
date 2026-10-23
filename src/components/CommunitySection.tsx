@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 const photos = [
   {
@@ -52,44 +52,53 @@ const photos = [
   },
 ];
 
-function ScatterPhoto({
+function InteractivePhoto({
   src,
   alt,
-  box,
+  className,
+  style,
+  sizes = "280px",
+  shadow = "shadow-[0_14px_30px_rgba(0,0,0,0.28)]",
 }: {
   src: string;
   alt: string;
-  box: { left: string; top: string; width: string; height: string };
+  className?: string;
+  style?: CSSProperties;
+  sizes?: string;
+  shadow?: string;
 }) {
-  const [hovered, setHovered] = useState(false);
+  const [active, setActive] = useState(false);
 
   return (
     <button
       type="button"
-      className="absolute overflow-hidden bg-[#3a2416] shadow-[0_14px_30px_rgba(0,0,0,0.28)] transition-transform duration-300 ease-out"
+      className={`absolute overflow-hidden bg-[#3a2416] transition-transform duration-300 ease-out ${shadow} ${className ?? ""}`}
       style={{
-        ...box,
-        zIndex: hovered ? 30 : 1,
-        transform: hovered ? "scale(1.08)" : "scale(1)",
+        ...style,
+        zIndex: active ? 40 : 1,
+        transform: active ? "scale(1.22)" : "scale(1)",
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
+      onClick={() => setActive((open) => !open)}
+      aria-pressed={active}
       aria-label={alt}
     >
-      <Image src={src} alt="" fill sizes="280px" className="object-cover" />
+      <Image src={src} alt="" fill sizes={sizes} className="object-cover" />
     </button>
   );
 }
 
 export function CommunitySection() {
   return (
-    <section id="village" className="overflow-x-clip bg-chocolate text-cream">
+    <section id="village" className="snap-block overflow-x-clip bg-chocolate text-cream">
       <div className="page-shell page-x hidden lg:block">
         <div className="relative aspect-[1440/860] w-full">
           {photos.map((photo) => (
-            <ScatterPhoto key={photo.src} {...photo} />
+            <InteractivePhoto
+              key={photo.src}
+              src={photo.src}
+              alt={photo.alt}
+              style={photo.box}
+            />
           ))}
 
           <div className="pointer-events-none absolute inset-x-[20%] top-[26%] z-10 text-center">
@@ -100,7 +109,8 @@ export function CommunitySection() {
             <h2 className="mx-auto mt-4 max-w-[920px] font-playfair text-[clamp(2.1rem,4.5vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
               <span className="block whitespace-nowrap">Everything your community</span>
               <span className="block whitespace-nowrap">
-                has to offer in <span className="italic">one place</span>
+                has to offer in{" "}
+                <span className="italic text-cream/40">one place</span>
               </span>
             </h2>
 
@@ -123,42 +133,38 @@ export function CommunitySection() {
         </div>
       </div>
 
-      <div className="overflow-x-clip py-8 lg:hidden">
-        <div className="relative mx-auto h-[360px] w-full max-w-[440px]">
+      <div className="overflow-x-clip py-8 pt-24 lg:hidden">
+        <div className="relative mx-auto mt-6 h-[380px] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/circle.png",
               alt: "Neighbors sitting together in a circle",
-              className: "left-[4%] top-0 w-[40%] aspect-[5/4]",
+              className: "left-[4%] top-[6%] w-[40%] aspect-[5/4]",
             },
             {
               src: "/images/community/workshop.png",
               alt: "People gathered around a workshop table",
-              className: "right-[4%] top-[2%] w-[34%] aspect-[4/3]",
+              className: "right-[4%] top-[8%] w-[34%] aspect-[4/3]",
             },
             {
               src: "/images/community/library.png",
               alt: "Sunlit neighborhood bookshop",
-              className: "left-[3%] top-[52%] w-[28%] aspect-[3/4]",
+              className: "left-[3%] top-[56%] w-[28%] aspect-[3/4]",
             },
             {
               src: "/images/community/watercolor.png",
               alt: "Hands painting with watercolors",
-              className: "right-[8%] top-[50%] w-[34%] aspect-[5/4]",
+              className: "right-[8%] top-[54%] w-[34%] aspect-[5/4]",
             },
           ].map((photo) => (
-            <div
+            <InteractivePhoto
               key={photo.src}
-              className={`absolute overflow-hidden bg-[#3a2416] shadow-[0_12px_24px_rgba(0,0,0,0.28)] ${photo.className}`}
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="180px"
-                className="object-cover"
-              />
-            </div>
+              src={photo.src}
+              alt={photo.alt}
+              className={photo.className}
+              sizes="180px"
+              shadow="shadow-[0_12px_24px_rgba(0,0,0,0.28)]"
+            />
           ))}
         </div>
 
@@ -172,7 +178,7 @@ export function CommunitySection() {
               community <span className="italic">has to</span>
             </span>
             <span className="block">
-              offer in <span className="italic">one place</span>
+              offer in <span className="italic text-cream/40">one place</span>
             </span>
           </h2>
           <p className="mt-5 font-inter text-[12px] font-semibold uppercase tracking-[0.04em]">
@@ -184,46 +190,42 @@ export function CommunitySection() {
           </p>
         </div>
 
-        <div className="relative mx-auto h-[520px] w-full max-w-[440px]">
+        <div className="relative mx-auto mt-6 h-[540px] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/performance.png",
               alt: "A neighbor performing on a rug",
-              className: "left-[3%] top-0 w-[34%] aspect-[4/5]",
+              className: "left-[3%] top-[6%] w-[34%] aspect-[4/5]",
             },
             {
               src: "/images/community/pottery.png",
               alt: "Hands shaping a clay pot",
-              className: "left-[39%] top-[30%] w-[24%] aspect-square",
+              className: "left-[39%] top-[34%] w-[24%] aspect-square",
             },
             {
               src: "/images/community/repair.png",
               alt: "Neighbors repairing things together",
-              className: "right-[3%] top-[2%] w-[32%] aspect-[5/4]",
+              className: "right-[3%] top-[8%] w-[32%] aspect-[5/4]",
             },
             {
               src: "/images/community/makers.png",
               alt: "A shared makers table under pendant lamps",
-              className: "left-[4%] top-[54%] w-[44%] aspect-[5/3]",
+              className: "left-[4%] top-[58%] w-[44%] aspect-[5/3]",
             },
             {
               src: "/images/community/books.png",
               alt: "Stacks of books on a wooden table",
-              className: "right-[4%] top-[52%] w-[28%] aspect-[3/4]",
+              className: "right-[4%] top-[56%] w-[28%] aspect-[3/4]",
             },
           ].map((photo) => (
-            <div
+            <InteractivePhoto
               key={photo.src}
-              className={`absolute overflow-hidden bg-[#3a2416] shadow-[0_12px_24px_rgba(0,0,0,0.28)] ${photo.className}`}
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="200px"
-                className="object-cover"
-              />
-            </div>
+              src={photo.src}
+              alt={photo.alt}
+              className={photo.className}
+              sizes="200px"
+              shadow="shadow-[0_12px_24px_rgba(0,0,0,0.28)]"
+            />
           ))}
         </div>
 

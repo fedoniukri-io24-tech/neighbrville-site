@@ -12,12 +12,12 @@ export function FooterWordmark() {
     const text = textRef.current;
     if (!wrap || !text) return;
 
+    let frame = 0;
+
     const fit = () => {
       const parentWidth = wrap.clientWidth;
       if (!parentWidth) return;
 
-      // Measure at identity without leaving a stale inline transform
-      // that can block React from re-applying scale.
       const prevTransform = text.style.transform;
       text.style.transform = "scale(1)";
       const naturalWidth = text.scrollWidth;
@@ -29,17 +29,30 @@ export function FooterWordmark() {
       const scale = parentWidth / naturalWidth;
       const height = Math.ceil(naturalHeight * scale);
 
-      setBox({ scale, height });
+      setBox((current) =>
+        Math.abs(current.scale - scale) < 0.001 && current.height === height
+          ? current
+          : { scale, height },
+      );
+    };
+
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(fit);
     };
 
     fit();
-
     if (document.fonts?.ready) {
-      void document.fonts.ready.then(fit);
+      void document.fonts.ready.then(schedule);
     }
 
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    const observer = new ResizeObserver(schedule);
+    observer.observe(wrap);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, []);
 
   return (

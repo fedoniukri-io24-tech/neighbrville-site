@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { Marquee } from "./Marquee";
+
 const experiences = [
   {
     title: "Pottery for Beginners",
@@ -72,17 +74,17 @@ const experiences = [
 ] as const;
 
 const mobilePoses = [
-  { x: -26, y: 16, rotate: -9 },
-  { x: 24, y: 4, rotate: 8 },
-  { x: -12, y: 20, rotate: -4 },
-  { x: 8, y: 8, rotate: 3 },
+  { x: -18, y: 22, rotate: -10 },
+  { x: 18, y: 58, rotate: 9 },
+  { x: -12, y: 94, rotate: -5 },
+  { x: 12, y: 130, rotate: 4 },
 ];
 
 const desktopPoses = [
-  { x: 64, y: 6, rotate: -6 },
-  { x: 8, y: 34, rotate: 5 },
-  { x: 78, y: 22, rotate: -3 },
-  { x: 22, y: 46, rotate: 3.5 },
+  { x: 64, y: 8, rotate: -6 },
+  { x: 8, y: 56, rotate: 5 },
+  { x: 78, y: 104, rotate: -3 },
+  { x: 22, y: 152, rotate: 3.5 },
 ];
 
 function clamp(value: number, min: number, max: number) {
@@ -106,11 +108,11 @@ function stackMotion(
   const depth = clamp(local, 0, 2.5);
   const t = easeOut(enter);
   const x = pose.x;
-  const y = (1 - t) * 72 + t * (pose.y - depth * 10) - (lifted ? 12 : 0);
+  const y = (1 - t) * 72 + t * (pose.y - depth * 4) - (lifted ? 12 : 0);
   const rotate = (1 - t) * (pose.rotate + 8) + t * (pose.rotate - depth * 0.35);
   const scale =
     ((1 - t) * 0.94 + t * Math.max(0.92, 1 - depth * 0.028)) *
-    (lifted ? 1.025 : 1);
+    (lifted ? 1.12 : 1);
   const shift = `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${scale})`;
 
   return {
@@ -143,7 +145,13 @@ export function ExperiencesSection() {
   const scrollIndex = reduceMotion
     ? experiences.length - 1
     : Math.round(progress * (experiences.length - 1));
-  const activeIndex = hovered ?? scrollIndex;
+  const canSwitchCards =
+    reduceMotion || scrollIndex >= experiences.length - 1;
+  const activeIndex = canSwitchCards ? (hovered ?? scrollIndex) : scrollIndex;
+
+  useEffect(() => {
+    if (!canSwitchCards && hovered !== null) setHovered(null);
+  }, [canSwitchCards, hovered]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -159,23 +167,27 @@ export function ExperiencesSection() {
       return;
     }
 
+    const section = sectionRef.current;
+    if (!section) return;
+
     let frame = 0;
+    let listening = false;
 
     const update = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-
       const rect = section.getBoundingClientRect();
-      const total = section.offsetHeight - window.innerHeight;
+      const vh = window.innerHeight;
+      const total = Math.max(section.offsetHeight - vh, 1);
 
       const next =
-        rect.top > window.innerHeight * 0.55
+        rect.top > 0
           ? 0
-          : rect.bottom <= window.innerHeight * 0.2
+          : rect.bottom <= vh * 0.12
             ? 1
-            : clamp(-rect.top, 0, Math.max(total, 1)) / Math.max(total, 1);
+            : clamp(-rect.top, 0, total) / total;
 
-      setProgress((current) => (Math.abs(current - next) < 0.001 ? current : next));
+      setProgress((current) =>
+        Math.abs(current - next) < 0.002 ? current : next,
+      );
     };
 
     const onScroll = () => {
@@ -183,14 +195,34 @@ export function ExperiencesSection() {
       frame = requestAnimationFrame(update);
     };
 
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    window.addEventListener("resize", onScroll);
+    const start = () => {
+      if (listening) return;
+      listening = true;
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      update();
+    };
+
+    const stop = () => {
+      if (!listening) return;
+      listening = false;
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) start();
+        else stop();
+      },
+      { rootMargin: "40% 0px" },
+    );
+    observer.observe(section);
 
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
+      stop();
     };
   }, [reduceMotion]);
 
@@ -198,14 +230,31 @@ export function ExperiencesSection() {
     <section
       id="experiences"
       ref={sectionRef}
-      className={`relative overflow-x-clip bg-chocolate text-cream ${reduceMotion ? "" : "h-[400vh]"}`}
+      className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:overflow-x-clip ${
+        reduceMotion ? "snap-block" : "h-[520vh] lg:h-[560vh]"
+      }`}
     >
+      {/* Desktop snap steps: one scroll settles each card stage */}
+      {!reduceMotion ? (
+        <div
+          className="pointer-events-none absolute inset-0 hidden lg:block"
+          aria-hidden
+        >
+          {Array.from({ length: experiences.length + 1 }, (_, index) => (
+            <div
+              key={index}
+              className="snap-step"
+              style={{ height: `${100 / (experiences.length + 1)}%` }}
+            />
+          ))}
+        </div>
+      ) : null}
       <div
-        className={`flex flex-col overflow-x-clip overflow-y-hidden pt-8 lg:hidden ${
-          reduceMotion ? "" : "sticky top-0 h-dvh"
+        className={`flex flex-col overflow-visible pt-8 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden ${
+          reduceMotion ? "min-h-dvh" : "sticky top-0 min-h-dvh"
         }`}
       >
-        <div className="page-shell page-x">
+        <div className="page-shell page-x relative z-20">
           <p className="text-left font-inter text-[11px] uppercase tracking-[0.16em] text-cream">
             Find something that feels like you
           </p>
@@ -223,7 +272,7 @@ export function ExperiencesSection() {
           </h2>
         </div>
 
-        <div className="relative mx-auto mt-4 h-[min(46vh,360px)] w-full max-w-[390px]">
+        <div className="relative z-0 mx-auto mt-10 h-[min(62vh,640px)] w-full max-w-[400px] shrink-0 overflow-visible">
           {experiences.map((item, index) => {
             const motion = stackMotion(
               index,
@@ -236,55 +285,69 @@ export function ExperiencesSection() {
             return (
               <article
                 key={item.title}
-                className="absolute left-1/2 top-[2%] w-[78%] origin-center bg-cream p-2.5 pb-3 text-chocolate shadow-[0_16px_30px_rgba(0,0,0,0.28)]"
+                role="button"
+                tabIndex={0}
+                aria-pressed={hovered === index}
+                className="absolute left-1/2 top-[4%] w-[82%] origin-center cursor-pointer touch-manipulation bg-cream p-3.5 pb-4 text-chocolate shadow-[0_16px_30px_rgba(0,0,0,0.28)]"
                 style={motion}
+                onClick={() =>
+                  setHovered((current) => (current === index ? null : index))
+                }
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setHovered((current) =>
+                      current === index ? null : index,
+                    );
+                  }
+                }}
               >
-                <div className="relative aspect-[3/2] w-full overflow-hidden bg-[#ebe4d8]">
+                <div className="relative aspect-square w-full overflow-hidden bg-[#ebe4d8]">
                   <Image
                     src={item.image}
                     alt={activeIndex === index ? item.alt : ""}
                     fill
-                    sizes="300px"
+                    sizes="340px"
                     className="object-cover"
                   />
                 </div>
-                <h3 className="mt-2.5 font-inter text-[13px] font-semibold uppercase leading-[1.15] tracking-[0.02em]">
+                <h3 className="mt-3.5 font-inter text-[16px] font-semibold uppercase leading-[1.15] tracking-[0.02em]">
                   {item.title}
                 </h3>
-                <p className="mt-1 font-inter text-[12px] leading-none text-chocolate/70">
+                <p className="mt-1.5 font-inter text-[13px] leading-none text-chocolate/70">
                   {item.meta}
                 </p>
                 {item.tag ? (
-                  <span className="mt-2.5 inline-flex border border-chocolate/40 px-2 py-1 font-inter text-[11px] leading-none">
+                  <span className="mt-3.5 inline-flex border border-chocolate/40 px-2.5 py-1.5 font-inter text-[12px] leading-none">
                     {item.tag}
                   </span>
                 ) : (
-                  <span className="mt-2.5 block h-[22px]" aria-hidden />
+                  <span className="mt-3.5 block h-[26px]" aria-hidden />
                 )}
               </article>
             );
           })}
         </div>
 
-        <div className="page-shell page-x pt-4 pb-2 text-center">
-          <p className="mx-auto max-w-[32ch] font-inter text-[14px] leading-[1.35] text-cream">
+        <div className="page-shell page-x relative z-20 mt-36 shrink-0 bg-chocolate pt-6 pb-2 text-center">
+          <p className="mx-auto max-w-[32ch] font-inter text-[13px] leading-[1.3] text-cream">
             Your neighborhood is full of people doing interesting things, places
             waiting to be discovered and initiatives bringing others together
           </p>
           <Link
-            href="#waitlist"
-            className="mt-6 inline-block font-playfair text-[clamp(1.7rem,7vw,2.15rem)] italic uppercase leading-none tracking-[-0.03em] text-cream underline decoration-[1px] underline-offset-[7px]"
+            href="/?as=neighbr#join"
+            className="mt-4 inline-block font-playfair text-[clamp(1.55rem,6.5vw,2rem)] italic uppercase leading-none tracking-[-0.03em] text-cream underline decoration-[1px] underline-offset-[7px]"
           >
             Join the waitlist
           </Link>
         </div>
 
-        <div className="mt-8 overflow-hidden pb-4" aria-hidden>
-          <div className="flex w-max animate-marquee whitespace-nowrap will-change-transform">
+        <div className="relative z-20 mt-auto shrink-0 overflow-x-clip pt-8 pb-5" aria-hidden>
+          <Marquee>
             {[0, 1].map((copy) => (
               <p
                 key={copy}
-                className="flex items-center font-playfair text-[clamp(1.7rem,8vw,2.4rem)] italic uppercase leading-none tracking-[-0.04em] text-[#ffffff]"
+                className="flex items-center py-1 font-playfair text-[clamp(1.55rem,7.2vw,2.2rem)] italic uppercase leading-[1.15] tracking-[-0.04em] text-[#ffffff]"
               >
                 {marqueeItems.map((item) => (
                   <span key={`${copy}-${item}`} className="inline-flex items-center">
@@ -294,7 +357,7 @@ export function ExperiencesSection() {
                 ))}
               </p>
             ))}
-          </div>
+          </Marquee>
         </div>
       </div>
 
@@ -305,8 +368,8 @@ export function ExperiencesSection() {
             : "sticky top-0 hidden h-dvh flex-col overflow-x-clip overflow-y-hidden lg:flex"
         }
       >
-        <div className="page-shell page-x grid w-full flex-1 grid-cols-1 items-center gap-10 pb-4 pt-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-8 lg:pb-2 lg:pt-10">
-          <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-between py-2 lg:py-6">
+        <div className="page-shell page-x grid w-full flex-1 grid-cols-1 items-center gap-10 pb-4 pt-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-8 lg:pb-6 lg:pt-28">
+          <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-between py-2 lg:min-h-[560px] lg:py-2">
             <div>
               <p className="font-inter text-[11px] uppercase tracking-[0.16em] text-cream sm:text-[12px]">
                 Find something that feels like you
@@ -321,17 +384,28 @@ export function ExperiencesSection() {
                     <button
                       key={item.title}
                       type="button"
-                      className={`block w-full text-left uppercase transition-[opacity,color] duration-300 ease-out sm:whitespace-nowrap ${
+                      disabled={!canSwitchCards}
+                      className={`block w-full text-left uppercase transition-[opacity,color] duration-300 ease-out sm:whitespace-nowrap disabled:cursor-default ${
                         isActive
                           ? "opacity-100"
                           : isRevealed
-                            ? "opacity-35 hover:opacity-70"
+                            ? canSwitchCards
+                              ? "opacity-35 hover:opacity-70"
+                              : "opacity-35"
                             : "opacity-20"
                       }`}
-                      onMouseEnter={() => setHovered(index)}
-                      onMouseLeave={() => setHovered(null)}
-                      onFocus={() => setHovered(index)}
-                      onBlur={() => setHovered(null)}
+                      onMouseEnter={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onMouseLeave={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
+                      onFocus={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onBlur={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
                       aria-pressed={isActive}
                     >
                       {item.line}
@@ -349,7 +423,7 @@ export function ExperiencesSection() {
               </p>
 
               <Link
-                href="#waitlist"
+                href="/?as=neighbr#join"
                 className="mt-5 inline-block font-playfair text-[clamp(1.35rem,2vw,1.85rem)] italic uppercase leading-none tracking-[-0.03em] text-cream underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80"
               >
                 Join the waitlist
@@ -357,7 +431,7 @@ export function ExperiencesSection() {
             </div>
           </div>
 
-          <div className="relative mx-auto h-[360px] w-full max-w-[720px] overflow-x-clip sm:h-[500px] sm:overflow-visible lg:mx-0 lg:h-[610px] lg:max-w-none">
+          <div className="relative mx-auto h-[360px] w-full max-w-[720px] overflow-x-clip sm:h-[500px] sm:overflow-visible lg:mx-0 lg:mt-2 lg:h-[610px] lg:max-w-none">
             <div className="absolute left-1/2 top-0 w-[700px] max-w-[min(100vw-2rem,700px)] origin-top -translate-x-1/2 scale-[0.55] sm:scale-[0.85] lg:left-0 lg:max-w-none lg:origin-top-left lg:translate-x-0 lg:scale-[1.12]">
               <div className="relative h-[560px] w-full">
                 {experiences.map((item, index) => {
@@ -379,11 +453,21 @@ export function ExperiencesSection() {
                           : "shadow-[0_16px_34px_rgba(0,0,0,0.26)]"
                       }`}
                       style={motion}
-                      onMouseEnter={() => setHovered(index)}
-                      onMouseLeave={() => setHovered(null)}
-                      onFocus={() => setHovered(index)}
-                      onBlur={() => setHovered(null)}
-                      tabIndex={motion.opacity > 0.4 ? 0 : -1}
+                      onMouseEnter={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onMouseLeave={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
+                      onFocus={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onBlur={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
+                      tabIndex={
+                        canSwitchCards && motion.opacity > 0.4 ? 0 : -1
+                      }
                     >
                       <div className="grid grid-cols-[1.2fr_0.9fr] items-stretch gap-4">
                         <div className="flex min-h-[196px] flex-col py-1">
@@ -432,7 +516,7 @@ export function ExperiencesSection() {
         </div>
 
         <div className="mt-auto overflow-hidden pb-5 pt-8 lg:pb-6 lg:pt-12" aria-hidden>
-          <div className="flex w-max animate-marquee whitespace-nowrap will-change-transform">
+          <Marquee>
             {[0, 1].map((copy) => (
               <p
                 key={copy}
@@ -446,7 +530,7 @@ export function ExperiencesSection() {
                 ))}
               </p>
             ))}
-          </div>
+          </Marquee>
         </div>
       </div>
     </section>

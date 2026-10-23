@@ -16,14 +16,31 @@ export function Header() {
 
   useEffect(() => {
     if (!menuOpen) return;
+
+    const scrollY = window.scrollY;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMenuOpen(false);
     };
+
     document.addEventListener("keydown", onKeyDown);
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+
     return () => {
       document.removeEventListener("keydown", onKeyDown);
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, scrollY);
     };
   }, [menuOpen]);
 
@@ -58,18 +75,18 @@ export function Header() {
           </nav>
 
           <div className="relative z-10 hidden min-w-0 shrink items-center gap-3 md:flex">
-            <button
-              type="button"
+            <Link
+              href="/?as=neighbr#join"
               className="bg-cream px-5 py-2.5 font-inter text-[11px] font-medium leading-none whitespace-nowrap text-chocolate transition-opacity hover:opacity-90"
             >
               Join as a Neighbr
-            </button>
-            <button
-              type="button"
+            </Link>
+            <Link
+              href="/?as=partner#join"
               className="border border-cream px-5 py-2.5 font-inter text-[11px] font-normal leading-none whitespace-nowrap text-cream transition-colors hover:bg-cream/10"
             >
               Become a Partner
-            </button>
+            </Link>
           </div>
 
           <button
@@ -79,17 +96,20 @@ export function Header() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            <span className="flex w-[28px] flex-col items-end gap-[7px]">
+            <span className="flex w-[28px] flex-col items-end gap-[6px]">
               <span
                 className={`block h-[1.5px] w-[28px] bg-cream transition-transform duration-200 ${
-                  menuOpen ? "translate-y-[4.25px] rotate-45" : ""
+                  menuOpen ? "translate-y-[7.5px] rotate-45" : ""
                 }`}
               />
               <span
                 className={`block h-[1.5px] bg-cream transition-all duration-200 ${
-                  menuOpen
-                    ? "w-[28px] -translate-y-[4.25px] -rotate-45"
-                    : "w-[17px]"
+                  menuOpen ? "w-[28px] opacity-0" : "w-[16px]"
+                }`}
+              />
+              <span
+                className={`block h-[1.5px] w-[28px] bg-cream transition-transform duration-200 ${
+                  menuOpen ? "-translate-y-[7.5px] -rotate-45" : ""
                 }`}
               />
             </span>
@@ -111,18 +131,20 @@ export function Header() {
               ))}
             </nav>
             <div className="mt-8 grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                className="bg-cream px-3 py-3.5 font-inter text-[11px] font-medium leading-none text-chocolate"
+              <Link
+                href="/?as=neighbr#join"
+                onClick={() => setMenuOpen(false)}
+                className="bg-cream px-3 py-3.5 text-center font-inter text-[11px] font-medium leading-none text-chocolate"
               >
                 Join as a Neighbr
-              </button>
-              <button
-                type="button"
-                className="border border-cream px-3 py-3.5 font-inter text-[11px] font-normal leading-none text-cream"
+              </Link>
+              <Link
+                href="/?as=partner#join"
+                onClick={() => setMenuOpen(false)}
+                className="border border-cream px-3 py-3.5 text-center font-inter text-[11px] font-normal leading-none text-cream"
               >
                 Become a Partner
-              </button>
+              </Link>
             </div>
           </div>
         ) : null}

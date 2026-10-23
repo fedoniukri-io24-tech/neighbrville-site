@@ -11,12 +11,16 @@ const playfair = Playfair_Display({
   variable: "--font-playfair-display",
   weight: ["400"],
   style: ["normal", "italic"],
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500"],
+  display: "swap",
+  adjustFontFallback: true,
 });
 
 export const viewport: Viewport = {

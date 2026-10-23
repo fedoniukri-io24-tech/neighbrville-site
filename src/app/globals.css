@@ -11,6 +11,60 @@
   /* Matches Community side-photo inset (left ~1.2% of frame) */
   --page-gutter-x: clamp(1.25rem, 1.2vw, 1.75rem);
   --page-max: 1440px;
+  --join-first-height: 100dvh;
+  --join-panel-height: 100dvh;
+  --join-panel-lift: clamp(1.25rem, 4vh, 2.75rem);
+  --join-mobile-panel-top: clamp(3.25rem, 12vh, 5.5rem);
+  /* Tall enough for waitlist + long mobile profile without JS resize */
+  --join-photo-height: calc(var(--join-first-height) + 220dvh);
+}
+
+.join-section {
+  min-height: var(--join-first-height);
+}
+
+.join-section--open {
+  min-height: calc(
+    var(--join-first-height) + var(--join-panel-height) - var(--join-panel-lift)
+  );
+}
+
+.join-section__photo {
+  height: var(--join-photo-height);
+  contain: paint;
+}
+
+/* Skip offscreen layout work for static lower sections */
+#faq,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+.join-expanded-panel {
+  height: var(--join-panel-height);
+  min-height: var(--join-panel-height);
+}
+
+/* Mobile profile/thank-you: grow with content; photo still covers via --join-photo-height */
+@media (max-width: 1023px) {
+  .join-section--open {
+    overflow: visible;
+  }
+
+  .join-expanded-panel.join-panel-fluid {
+    height: auto;
+    min-height: var(--join-panel-height);
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* Avoid snap fighting join panel smooth-scroll */
+@media (min-width: 1024px) {
+  html.join-open {
+    scroll-snap-type: none;
+  }
 }
 
 html {
@@ -24,6 +78,29 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   overflow-x: clip;
   max-width: 100%;
+}
+
+/* Desktop: snap scroll so each block settles fully */
+@media (min-width: 1024px) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+
+  .snap-block {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .snap-step {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
 }
 
 .page-shell {

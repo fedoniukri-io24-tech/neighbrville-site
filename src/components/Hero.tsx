@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const polaroids = [
@@ -45,27 +46,37 @@ const mobilePolaroids = [
   {
     src: "/images/hero/polaroid-03.png",
     alt: "Neighbors grilling together outdoors",
-    className: "left-[-2%] top-[7%] z-[1] w-[40%] -rotate-[12deg]",
+    className: "left-[0%] top-[7%] w-[38%]",
+    rotate: -12,
+    zIndex: 1,
   },
   {
     src: "/images/hero/polaroid-05.png",
     alt: "Friends gathered in a living room",
-    className: "left-[30%] top-[0%] z-[3] w-[40%] rotate-[2deg]",
+    className: "left-[31%] top-[0%] w-[38%]",
+    rotate: 2,
+    zIndex: 3,
   },
   {
     src: "/images/hero/polaroid-01.png",
     alt: "Friends talking around a picnic table",
-    className: "right-[-2%] top-[7%] z-[2] w-[40%] rotate-[12deg]",
+    className: "right-[0%] top-[7%] w-[38%]",
+    rotate: 12,
+    zIndex: 2,
   },
   {
     src: "/images/hero/polaroid-02.png",
     alt: "Neighbors embracing at a gathering",
-    className: "left-[0%] top-[40%] z-[4] w-[50%] -rotate-[7deg]",
+    className: "left-[8%] top-[38%] w-[46%]",
+    rotate: -7,
+    zIndex: 4,
   },
   {
     src: "/images/hero/polaroid-04.png",
     alt: "Hands shaping clay on a pottery wheel",
-    className: "right-[0%] top-[40%] z-[5] w-[50%] rotate-[7deg]",
+    className: "right-[8%] top-[38%] w-[46%]",
+    rotate: 7,
+    zIndex: 5,
   },
 ];
 
@@ -110,15 +121,17 @@ function PolaroidFrame({
 
 export function Hero() {
   const [hovered, setHovered] = useState<number | null>(null);
+  const [activeMobile, setActiveMobile] = useState<number | null>(null);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Mobile layout — 1:1 with design screenshot */}
-      <div className="page-x flex flex-1 flex-col overflow-x-clip pb-5 pt-0 lg:hidden">
-        <div className="page-shell flex flex-1 flex-col">
-          <h1 className="relative text-center font-playfair text-[clamp(2.4rem,10.8vw,3.15rem)] font-normal uppercase leading-[0.86] tracking-[-0.05em] text-cream">
-            <span className="block">Become</span>
-            <span className="block italic">an active</span>
+      <div className="page-x flex flex-1 flex-col overflow-visible pb-5 pt-0 lg:hidden">
+        <div className="page-shell flex flex-1 flex-col overflow-visible">
+          <h1 className="relative text-center font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
+            <span className="block whitespace-nowrap">
+              Become <span className="italic">an active</span>
+            </span>
             <span className="flex items-end justify-center gap-1.5">
               <span>participant</span>
               <span className="mb-[0.38em] shrink-0 font-inter text-[10px] font-normal normal-case leading-[1.1] tracking-[0.01em]">
@@ -127,25 +140,41 @@ export function Hero() {
             </span>
           </h1>
 
-          <div
-            className="relative mx-auto mt-3 aspect-[1/0.92] w-[calc(100%+1.75rem)] max-w-[460px]"
-            aria-hidden="true"
-          >
-            {mobilePolaroids.map((photo, index) => (
-              <div key={photo.src} className={`absolute ${photo.className}`}>
-                <PolaroidFrame
-                  src={photo.src}
-                  alt=""
-                  priority={index < 3}
-                  sizes="46vw"
-                  compact
-                />
-              </div>
-            ))}
+          <div className="relative z-10 mx-auto mt-3 aspect-[1/1.02] w-[calc(100%+1rem)] max-w-[440px] overflow-visible">
+            {mobilePolaroids.map((photo, index) => {
+              const isActive = activeMobile === index;
+
+              return (
+                <button
+                  key={photo.src}
+                  type="button"
+                  aria-label={photo.alt}
+                  className={`absolute origin-center touch-manipulation transition-transform duration-300 ease-out ${photo.className}`}
+                  style={{
+                    zIndex: isActive ? 50 : photo.zIndex,
+                    transform: `rotate(${photo.rotate}deg) scale(${isActive ? 1.24 : 1})`,
+                  }}
+                  aria-pressed={isActive}
+                  onClick={() =>
+                    setActiveMobile((current) =>
+                      current === index ? null : index,
+                    )
+                  }
+                >
+                  <PolaroidFrame
+                    src={photo.src}
+                    alt=""
+                    priority={index < 3}
+                    sizes="46vw"
+                    compact
+                  />
+                </button>
+              );
+            })}
           </div>
 
-          <p className="relative mt-2 text-center font-playfair text-[clamp(2.4rem,10.8vw,3.15rem)] font-normal uppercase leading-[0.86] tracking-[-0.05em] text-cream">
-            <span className="block italic">In your local</span>
+          <p className="relative mt-2 text-center font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
+            <span className="block whitespace-nowrap italic">In your local</span>
             <span className="mt-0.5 flex items-baseline justify-center gap-x-2.5">
               <span className="mb-[0.16em] shrink-0 font-inter text-[10px] font-normal normal-case leading-none tracking-[0.01em]">
                 London &amp; Berlin
@@ -154,7 +183,7 @@ export function Hero() {
             </span>
           </p>
 
-          <div className="mt-auto flex flex-col items-center pt-5">
+          <div className="mt-5 flex flex-col items-center pb-2">
             <p className="max-w-[26ch] text-center font-inter text-[13px] leading-[1.3] text-cream">
               Your neighborhood is full of places, people, and initiatives to
               discover
@@ -163,19 +192,19 @@ export function Hero() {
               NeighbrVille helps you find them
             </p>
 
-            <div className="mt-5 grid w-full grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                className="bg-cream px-3 py-3.5 font-inter text-[13px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
+            <div className="mt-4 grid w-full grid-cols-2 gap-3">
+              <Link
+                href="/?as=neighbr#join"
+                className="bg-cream px-3 py-3.5 text-center font-inter text-[14px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
               >
                 Join as a Neighbr
-              </button>
-              <button
-                type="button"
-                className="border border-cream px-3 py-3.5 font-inter text-[13px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
+              </Link>
+              <Link
+                href="/?as=partner#join"
+                className="border border-cream px-3 py-3.5 text-center font-inter text-[14px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
               >
                 Become a Partner
-              </button>
+              </Link>
             </div>
           </div>
         </div>

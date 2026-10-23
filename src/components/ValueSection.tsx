@@ -4,7 +4,7 @@ export function ValueSection() {
   return (
     <section
       id="about"
-      className="grid grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2"
+      className="snap-block grid grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2"
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image
@@ -13,7 +13,6 @@ export function ValueSection() {
           fill
           className="object-cover object-[center_40%]"
           sizes="(max-width: 1024px) 100vw, 50vw"
-          priority
         />
       </div>
 
