@@ -71,6 +71,56 @@ const experiences = [
   },
 ] as const;
 
+const mobilePoses = [
+  { x: -26, y: 16, rotate: -9 },
+  { x: 24, y: 4, rotate: 8 },
+  { x: -12, y: 20, rotate: -4 },
+  { x: 8, y: 8, rotate: 3 },
+];
+
+const desktopPoses = [
+  { x: 64, y: 6, rotate: -6 },
+  { x: 8, y: 34, rotate: 5 },
+  { x: 78, y: 22, rotate: -3 },
+  { x: 22, y: 46, rotate: 3.5 },
+];
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function easeOut(t: number) {
+  return 1 - (1 - t) ** 3;
+}
+
+function stackMotion(
+  index: number,
+  progress: number,
+  pose: { x: number; y: number; rotate: number },
+  lifted: boolean,
+  centered: boolean,
+) {
+  const cursor = progress * (experiences.length - 1);
+  const local = cursor - index;
+  const enter = clamp((local + 0.45) / 0.45, 0, 1);
+  const depth = clamp(local, 0, 2.5);
+  const t = easeOut(enter);
+  const x = pose.x;
+  const y = (1 - t) * 72 + t * (pose.y - depth * 10) - (lifted ? 12 : 0);
+  const rotate = (1 - t) * (pose.rotate + 8) + t * (pose.rotate - depth * 0.35);
+  const scale =
+    ((1 - t) * 0.94 + t * Math.max(0.92, 1 - depth * 0.028)) *
+    (lifted ? 1.025 : 1);
+  const shift = `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${scale})`;
+
+  return {
+    opacity: t,
+    zIndex: lifted ? 40 : index + 2,
+    pointerEvents: enter > 0.35 ? "auto" : "none",
+    transform: centered ? `translateX(-50%) ${shift}` : shift,
+  } as const;
+}
+
 const marqueeItems = [
   "Libraries",
   "Studios",
@@ -86,10 +136,13 @@ const marqueeItems = [
 
 export function ExperiencesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [scrollIndex, setScrollIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  const scrollIndex = reduceMotion
+    ? experiences.length - 1
+    : Math.round(progress * (experiences.length - 1));
   const activeIndex = hovered ?? scrollIndex;
 
   useEffect(() => {
@@ -102,7 +155,7 @@ export function ExperiencesSection() {
 
   useEffect(() => {
     if (reduceMotion) {
-      setScrollIndex(experiences.length - 1);
+      setProgress(1);
       return;
     }
 
@@ -115,23 +168,14 @@ export function ExperiencesSection() {
       const rect = section.getBoundingClientRect();
       const total = section.offsetHeight - window.innerHeight;
 
-      if (rect.top > window.innerHeight * 0.55) {
-        setScrollIndex(0);
-        return;
-      }
+      const next =
+        rect.top > window.innerHeight * 0.55
+          ? 0
+          : rect.bottom <= window.innerHeight * 0.2
+            ? 1
+            : clamp(-rect.top, 0, Math.max(total, 1)) / Math.max(total, 1);
 
-      if (rect.bottom <= window.innerHeight * 0.2) {
-        setScrollIndex(experiences.length - 1);
-        return;
-      }
-
-      const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(total, 1));
-      const progress = total > 0 ? scrolled / total : 1;
-      const index = Math.min(
-        experiences.length - 1,
-        Math.floor(progress * experiences.length),
-      );
-      setScrollIndex(index);
+      setProgress((current) => (Math.abs(current - next) < 0.001 ? current : next));
     };
 
     const onScroll = () => {
@@ -157,10 +201,108 @@ export function ExperiencesSection() {
       className={`relative overflow-x-clip bg-chocolate text-cream ${reduceMotion ? "" : "h-[400vh]"}`}
     >
       <div
+        className={`flex flex-col overflow-x-clip overflow-y-hidden pt-8 lg:hidden ${
+          reduceMotion ? "" : "sticky top-0 h-dvh"
+        }`}
+      >
+        <div className="page-shell page-x">
+          <p className="text-center font-inter text-[11px] uppercase tracking-[0.16em] text-cream">
+            Find something that feels like you
+          </p>
+          <h2 className="mt-3 max-w-[18ch] text-left font-playfair text-[clamp(1.7rem,7.6vw,2.45rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] text-cream">
+            <span className="block">
+              Try a new <span className="italic">experience</span>,
+            </span>
+            <span className="block">
+              meet <span className="italic">your</span> neighbors,
+            </span>
+            <span className="block">
+              see your <span className="italic">community</span>
+            </span>
+            <span className="block italic">differently</span>
+          </h2>
+        </div>
+
+        <div className="relative mx-auto mt-4 h-[min(46vh,360px)] w-full max-w-[390px]">
+          {experiences.map((item, index) => {
+            const motion = stackMotion(
+              index,
+              reduceMotion ? 1 : progress,
+              mobilePoses[index],
+              activeIndex === index,
+              true,
+            );
+
+            return (
+              <article
+                key={item.title}
+                className="absolute left-1/2 top-[2%] w-[78%] origin-center bg-cream p-2.5 pb-3 text-chocolate shadow-[0_16px_30px_rgba(0,0,0,0.28)]"
+                style={motion}
+              >
+                <div className="relative aspect-[3/2] w-full overflow-hidden bg-[#ebe4d8]">
+                  <Image
+                    src={item.image}
+                    alt={activeIndex === index ? item.alt : ""}
+                    fill
+                    sizes="300px"
+                    className="object-cover"
+                  />
+                </div>
+                <h3 className="mt-2.5 font-inter text-[13px] font-semibold uppercase leading-[1.15] tracking-[0.02em]">
+                  {item.title}
+                </h3>
+                <p className="mt-1 font-inter text-[12px] leading-none text-chocolate/70">
+                  {item.meta}
+                </p>
+                {item.tag ? (
+                  <span className="mt-2.5 inline-flex border border-chocolate/40 px-2 py-1 font-inter text-[11px] leading-none">
+                    {item.tag}
+                  </span>
+                ) : (
+                  <span className="mt-2.5 block h-[22px]" aria-hidden />
+                )}
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="page-shell page-x pt-4 pb-2 text-center">
+          <p className="mx-auto max-w-[32ch] font-inter text-[14px] leading-[1.35] text-cream">
+            Your neighborhood is full of people doing interesting things, places
+            waiting to be discovered and initiatives bringing others together
+          </p>
+          <Link
+            href="#waitlist"
+            className="mt-6 inline-block font-playfair text-[clamp(1.7rem,7vw,2.15rem)] italic uppercase leading-none tracking-[-0.03em] text-cream underline decoration-[1px] underline-offset-[7px]"
+          >
+            Join the waitlist
+          </Link>
+        </div>
+
+        <div className="mt-8 overflow-hidden pb-4" aria-hidden>
+          <div className="flex w-max animate-marquee whitespace-nowrap will-change-transform">
+            {[0, 1].map((copy) => (
+              <p
+                key={copy}
+                className="flex items-center font-playfair text-[clamp(1.7rem,8vw,2.4rem)] italic uppercase leading-none tracking-[-0.04em] text-white"
+              >
+                {marqueeItems.map((item) => (
+                  <span key={`${copy}-${item}`} className="inline-flex items-center">
+                    <span className="px-3">{item}</span>
+                    <span>·</span>
+                  </span>
+                ))}
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div
         className={
           reduceMotion
-            ? "flex flex-col overflow-x-clip"
-            : "sticky top-0 flex h-dvh flex-col overflow-x-clip overflow-y-hidden"
+            ? "hidden flex-col overflow-x-clip lg:flex"
+            : "sticky top-0 hidden h-dvh flex-col overflow-x-clip overflow-y-hidden lg:flex"
         }
       >
         <div className="page-shell page-x grid w-full flex-1 grid-cols-1 items-center gap-10 pb-4 pt-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-8 lg:pb-2 lg:pt-10">
@@ -219,30 +361,29 @@ export function ExperiencesSection() {
             <div className="absolute left-1/2 top-0 w-[700px] max-w-[min(100vw-2rem,700px)] origin-top -translate-x-1/2 scale-[0.55] sm:scale-[0.85] lg:left-0 lg:max-w-none lg:origin-top-left lg:translate-x-0 lg:scale-[1.12]">
               <div className="relative h-[560px] w-full">
                 {experiences.map((item, index) => {
-                  const isRevealed = index <= scrollIndex || hovered === index;
-                  const isActive = activeIndex === index && isRevealed;
+                  const isActive = activeIndex === index;
+                  const motion = stackMotion(
+                    index,
+                    reduceMotion ? 1 : progress,
+                    desktopPoses[index],
+                    isActive,
+                    false,
+                  );
 
                   return (
                     <article
                       key={item.title}
-                      className={`absolute w-[620px] max-w-none origin-center bg-cream p-4 text-chocolate shadow-[0_18px_40px_rgba(0,0,0,0.28)] transition-[opacity,transform,box-shadow] duration-500 ease-out sm:p-5 ${
-                        isRevealed ? "opacity-100" : "pointer-events-none opacity-0"
-                      } ${
-                        isActive ? "shadow-[0_28px_54px_rgba(0,0,0,0.45)]" : ""
+                      className={`absolute top-6 left-2 w-[620px] max-w-none origin-center bg-cream p-4 text-chocolate sm:p-5 ${
+                        isActive
+                          ? "shadow-[0_28px_54px_rgba(0,0,0,0.42)]"
+                          : "shadow-[0_16px_34px_rgba(0,0,0,0.26)]"
                       }`}
-                      style={{
-                        left: item.left,
-                        top: item.top,
-                        zIndex: isActive ? 30 : item.zIndex,
-                        transform: isRevealed
-                          ? `translateY(0) rotate(${item.rotate}deg) scale(${isActive ? 1.035 : 1})`
-                          : `translateY(36px) rotate(${item.rotate}deg) scale(0.98)`,
-                      }}
+                      style={motion}
                       onMouseEnter={() => setHovered(index)}
                       onMouseLeave={() => setHovered(null)}
                       onFocus={() => setHovered(index)}
                       onBlur={() => setHovered(null)}
-                      tabIndex={isRevealed ? 0 : -1}
+                      tabIndex={motion.opacity > 0.4 ? 0 : -1}
                     >
                       <div className="grid grid-cols-[1.2fr_0.9fr] items-stretch gap-4">
                         <div className="flex min-h-[196px] flex-col py-1">
@@ -295,7 +436,7 @@ export function ExperiencesSection() {
             {[0, 1].map((copy) => (
               <p
                 key={copy}
-                className="flex items-center font-playfair text-[clamp(1.6rem,3.4vw,3.15rem)] italic uppercase leading-none tracking-[-0.04em] text-cream"
+                className="flex items-center font-playfair text-[clamp(1.6rem,3.4vw,3.15rem)] italic uppercase leading-none tracking-[-0.04em] text-white"
               >
                 {marqueeItems.map((item) => (
                   <span key={`${copy}-${item}`} className="inline-flex items-center">
