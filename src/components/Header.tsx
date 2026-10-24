@@ -67,7 +67,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-inter text-[13px] font-normal leading-[1.1] text-cream transition-opacity hover:opacity-75"
+                className="font-inter text-[13px] font-normal leading-[1.1] text-ivory transition-opacity hover:opacity-75"
               >
                 {link.label}
               </Link>
@@ -77,13 +77,13 @@ export function Header() {
           <div className="relative z-10 hidden min-w-0 shrink items-center gap-3 md:flex">
             <Link
               href="/?as=neighbr#join"
-              className="bg-cream px-5 py-2.5 font-inter text-[11px] font-medium leading-none whitespace-nowrap text-chocolate transition-opacity hover:opacity-90"
+              className="bg-cream px-5 py-3 font-inter text-[11px] font-medium leading-none whitespace-nowrap text-chocolate transition-opacity hover:opacity-90"
             >
               Join as a Neighbr
             </Link>
             <Link
               href="/?as=partner#join"
-              className="border border-cream px-5 py-2.5 font-inter text-[11px] font-normal leading-none whitespace-nowrap text-cream transition-colors hover:bg-cream/10"
+              className="border border-cream px-5 py-3 font-inter text-[11px] font-normal leading-none whitespace-nowrap text-cream transition-colors hover:bg-cream/10"
             >
               Become a Partner
             </Link>
@@ -123,7 +123,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="font-inter text-[18px] text-cream"
+                  className="font-inter text-[18px] text-ivory"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}

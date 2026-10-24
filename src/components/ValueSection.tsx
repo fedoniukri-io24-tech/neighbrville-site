@@ -4,7 +4,7 @@ export function ValueSection() {
   return (
     <section
       id="about"
-      className="snap-block grid grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2"
+      className="snap-block grid min-h-dvh grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2 lg:items-stretch"
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image
@@ -16,8 +16,8 @@ export function ValueSection() {
         />
       </div>
 
-      <div className="page-x flex min-h-[58svh] flex-col justify-between bg-cream py-8 text-chocolate lg:min-h-full lg:py-16 xl:py-20">
-        <h2 className="font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
+      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-screen lg:px-10 lg:py-16 xl:px-14 xl:py-20">
+        <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
           <span className="block lg:hidden">
             A <span className="italic">city</span> can feel like a
           </span>
@@ -32,21 +32,26 @@ export function ValueSection() {
           </span>
         </h2>
 
-        <div className="my-10 flex items-center justify-between gap-3 font-inter text-[11px] uppercase tracking-[0.12em] text-chocolate sm:text-[12px] lg:my-0 lg:text-[13px] lg:tracking-[0.08em]">
-          <span>Shared interests</span>
-          <span aria-hidden>/</span>
-          <span>Stronger communities</span>
+        <div
+          className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.06em] text-chocolate sm:gap-2 sm:tracking-[0.07em] lg:gap-3 lg:text-[13px] lg:tracking-[0.08em]"
+        >
+          <span className="shrink-0 whitespace-nowrap">Shared interests</span>
+          <span className="shrink-0" aria-hidden>/</span>
+          <span className="shrink-0 whitespace-nowrap">
+            Stronger communities
+          </span>
         </div>
 
-        <p className="max-w-[34rem] font-inter text-[15px] leading-[1.35] text-chocolate lg:hidden">
+        <p className="relative z-10 mt-auto max-w-[34rem] shrink-0 font-inter text-[15px] leading-[1.35] text-chocolate lg:hidden">
           Your neighborhood is full of people doing interesting things, places
           waiting to be discovered and initiatives bringing others together
         </p>
-        <p className="hidden max-w-[34rem] font-inter text-[16px] leading-[1.1] text-chocolate sm:text-[18px] lg:block">
-          We live closer together than ever, yet many of us feel more disconnected
-          than before. NeighbrVille helps you get involved, connect and belong –
-          right where you live. One shared experience can make a neighborhood
-          feel like a community!
+
+        <p className="relative z-10 hidden max-w-[36rem] shrink-0 font-inter text-[14px] leading-[1.22] text-chocolate lg:block lg:text-[15px]">
+          We live closer together than ever, yet many of us feel more
+          disconnected than before. NeighbrVille helps you get involved, connect
+          and belong - right where you live. One shared experience can make a
+          neighborhood feel like a community!
         </p>
       </div>
     </section>

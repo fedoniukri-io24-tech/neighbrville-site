@@ -44,26 +44,21 @@ export function scrollToJoinPanel(
 ) {
   if (!node) return;
 
+  // Wait a frame so layout after expand is settled, then scroll to the
+  // panel's top edge (no extra lift — old --join-panel-lift offset drifted).
   requestAnimationFrame(() => {
-    const liftVar = getComputedStyle(document.documentElement)
-      .getPropertyValue("--join-panel-lift")
-      .trim();
-    const probe = document.createElement("div");
-    probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;height:${liftVar || "0px"}`;
-    document.body.appendChild(probe);
-    const lift = probe.offsetHeight;
-    probe.remove();
+    requestAnimationFrame(() => {
+      const top = node.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
 
-    const top = node.getBoundingClientRect().top + window.scrollY - lift * 0.35;
-    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      if (!options?.focus) return;
 
-    if (!options?.focus) return;
-
-    const focusable = node.querySelector<HTMLElement>(
-      'input:not([type="hidden"]), textarea, select, button[type="submit"]',
-    );
-    window.setTimeout(() => {
-      focusable?.focus({ preventScroll: true });
-    }, 320);
+      const focusable = node.querySelector<HTMLElement>(
+        'input:not([type="hidden"]), textarea, select, button[type="submit"]',
+      );
+      window.setTimeout(() => {
+        focusable?.focus({ preventScroll: true });
+      }, 450);
+    });
   });
 }

@@ -22,7 +22,7 @@ export const faqs = [
   {
     question: "Can I join alone?",
     answer:
-      "Yes! In fact, we expect many people to. NeighbrVille is designed to make showing up alone feel normal and make it easier to meet people through a shared activity instead of awkward introductions.",
+      "Yes! In fact, we expect many people to. NeighbrVille is designed to make showing up feel normal and make it easier to meet people through a shared activity instead of awkward introductions.",
   },
   {
     question: "Are all experiences paid?",
@@ -42,7 +42,7 @@ export const faqs = [
   {
     question: "What happens after I join?",
     answer:
-      "Once you join, you'll become part of the NeighbrVille community and receive updates about experiences, local Hosts, and opportunities in your city. Early members will also be among the first to hear about launches, community events, and ways to get involved.",
+      "Once you join, you'll become part of the NeighbrVille community and receive updates about experiences, local Hosts, and opportunities in your city. Early members will also be the first to hear about launches, community events, and ways to get involved.",
   },
   {
     question: "Do I need to speak another language?",

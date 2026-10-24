@@ -257,7 +257,7 @@ function ProfileShell({
 }) {
   return (
     <div className="join-profile-shell relative box-border flex w-full flex-col gap-5 max-lg:pt-[var(--join-mobile-panel-top)] lg:grid lg:min-h-[var(--join-panel-height)] lg:grid-cols-2 lg:gap-0 lg:pt-0">
-      <div className="relative z-10 flex w-full flex-col bg-cream px-6 pb-8 pt-7 text-chocolate sm:px-8 sm:pb-9 sm:pt-8 lg:px-12 lg:py-10 xl:px-14 xl:py-12">
+      <div className="page-x relative z-10 flex w-full flex-col bg-cream py-8 pb-8 pt-7 text-chocolate sm:pb-9 sm:pt-8 lg:px-10 lg:py-10 xl:px-14 xl:py-12">
         <button
           type="button"
           onClick={onBack}

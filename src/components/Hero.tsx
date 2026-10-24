@@ -4,40 +4,49 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+/*
+  Desktop: `lift` and `ml` are fractions of the polaroid width (--pw),
+  so the whole row scales together with the section.
+*/
 const polaroids = [
   {
     src: "/images/hero/polaroid-03.png",
     alt: "Neighbors grilling together outdoors",
     rotate: -14,
-    lift: 18,
+    lift: 0.004,
+    ml: 0,
     zIndex: 1,
   },
   {
     src: "/images/hero/polaroid-05.png",
     alt: "Friends gathered in a living room",
-    rotate: -6,
-    lift: 4,
-    zIndex: 2,
+    rotate: -5,
+    lift: 0,
+    ml: 0.048,
+    zIndex: 4,
   },
   {
     src: "/images/hero/polaroid-02.png",
     alt: "Neighbors embracing at a gathering",
     rotate: 3,
-    lift: 28,
-    zIndex: 4,
+    lift: 0.081,
+    ml: -0.028,
+    zIndex: 2,
   },
   {
     src: "/images/hero/polaroid-01.png",
     alt: "Friends talking around a picnic table",
-    rotate: 8,
-    lift: 8,
+    rotate: 7,
+    lift: 0.064,
+    ml: -0.228,
     zIndex: 5,
   },
   {
     src: "/images/hero/polaroid-04.png",
     alt: "Hands shaping clay on a pottery wheel",
-    rotate: 13,
-    lift: -8,
+    rotate: 10,
+    lift: -0.162,
+    ml: -0.208,
     zIndex: 3,
   },
 ];
@@ -46,37 +55,37 @@ const mobilePolaroids = [
   {
     src: "/images/hero/polaroid-03.png",
     alt: "Neighbors grilling together outdoors",
-    className: "left-[0%] top-[7%] w-[38%]",
+    className: "left-[5%] top-[8.6%] w-[30.8%]",
     rotate: -12,
     zIndex: 1,
   },
   {
     src: "/images/hero/polaroid-05.png",
     alt: "Friends gathered in a living room",
-    className: "left-[31%] top-[0%] w-[38%]",
+    className: "left-[33.5%] top-[1.2%] w-[31%]",
     rotate: 2,
-    zIndex: 3,
+    zIndex: 2,
   },
   {
     src: "/images/hero/polaroid-01.png",
     alt: "Friends talking around a picnic table",
-    className: "right-[0%] top-[7%] w-[38%]",
+    className: "left-[62.5%] top-[10%] w-[30.8%]",
     rotate: 12,
-    zIndex: 2,
+    zIndex: 3,
   },
   {
     src: "/images/hero/polaroid-02.png",
     alt: "Neighbors embracing at a gathering",
-    className: "left-[8%] top-[38%] w-[46%]",
-    rotate: -7,
-    zIndex: 4,
+    className: "left-[18%] top-[41%] w-[35%]",
+    rotate: -9,
+    zIndex: 10,
   },
   {
     src: "/images/hero/polaroid-04.png",
     alt: "Hands shaping clay on a pottery wheel",
-    className: "right-[8%] top-[38%] w-[46%]",
+    className: "left-[47.5%] top-[42%] w-[35%]",
     rotate: 7,
-    zIndex: 5,
+    zIndex: 11,
   },
 ];
 
@@ -101,11 +110,7 @@ function PolaroidFrame({
           : "p-2 pb-8 lg:p-[10px] lg:pb-11"
       }`}
     >
-      <div
-        className={`relative w-full overflow-hidden bg-[#ece7df] ${
-          compact ? "aspect-square" : "aspect-[4/5]"
-        }`}
-      >
+      <div className="relative aspect-square w-full overflow-hidden bg-[#ece7df]">
         <Image
           src={src}
           alt={alt}
@@ -125,22 +130,22 @@ export function Hero() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* Mobile layout — 1:1 with design screenshot */}
-      <div className="page-x flex flex-1 flex-col overflow-visible pb-5 pt-0 lg:hidden">
+      {/* ───────────── Mobile ───────────── */}
+      <div className="page-x flex flex-1 flex-col overflow-visible pb-5 pt-28 lg:hidden">
         <div className="page-shell flex flex-1 flex-col overflow-visible">
-          <h1 className="relative text-center font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
+          <h1 className="relative text-left font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
             <span className="block whitespace-nowrap">
-              Become <span className="italic">an active</span>
+              Become an <span className="italic">active</span>
             </span>
-            <span className="flex items-end justify-center gap-1.5">
+            <span className="flex items-end justify-start gap-1.5">
               <span>participant</span>
-              <span className="mb-[0.38em] shrink-0 font-inter text-[10px] font-normal normal-case leading-[1.1] tracking-[0.01em]">
+              <span className="mb-[0.38em] shrink-0 font-inter text-[10px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
                 Launching Early 2027
               </span>
             </span>
           </h1>
 
-          <div className="relative z-10 mx-auto mt-3 aspect-[1/1.02] w-[calc(100%+1rem)] max-w-[440px] overflow-visible">
+          <div className="relative left-1/2 z-10 mt-1 aspect-[312/245] w-screen max-w-[440px] -translate-x-1/2 overflow-visible">
             {mobilePolaroids.map((photo, index) => {
               const isActive = activeMobile === index;
 
@@ -173,35 +178,38 @@ export function Hero() {
             })}
           </div>
 
-          <p className="relative mt-2 text-center font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
-            <span className="block whitespace-nowrap italic">In your local</span>
-            <span className="mt-0.5 flex items-baseline justify-center gap-x-2.5">
-              <span className="mb-[0.16em] shrink-0 font-inter text-[10px] font-normal normal-case leading-none tracking-[0.01em]">
+          <p className="relative -mt-0.5 text-right font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
+            <span className="block translate-x-2.5 whitespace-nowrap">
+              <span className="italic">In</span> your local
+            </span>
+            <span className="mt-0.5 flex items-baseline justify-between">
+              <span className="mb-[0.16em] shrink-0 font-inter text-[10px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
                 London &amp; Berlin
               </span>
-              <span className="italic">community</span>
+              <span className="translate-x-2.5 italic">community</span>
             </span>
           </p>
 
           <div className="mt-5 flex flex-col items-center pb-2">
-            <p className="max-w-[26ch] text-center font-inter text-[13px] leading-[1.3] text-cream">
-              Your neighborhood is full of places, people, and initiatives to
-              discover
+            <p className="w-full max-w-[36ch] text-center font-inter text-[13px] leading-[1.32] text-ivory">
+              Your neighborhood is full of places, people,
+              <br />
+              and initiatives to discover
             </p>
-            <p className="mt-2 text-center font-inter text-[10px] font-medium uppercase tracking-[0.07em] text-cream">
+            <p className="mt-2 text-center font-inter text-[10px] font-medium uppercase tracking-[0.07em] text-ivory">
               NeighbrVille helps you find them
             </p>
 
             <div className="mt-4 grid w-full grid-cols-2 gap-3">
               <Link
                 href="/?as=neighbr#join"
-                className="bg-cream px-3 py-3.5 text-center font-inter text-[14px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
+                className="bg-cream px-3 py-4 text-center font-inter text-[14px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
               >
                 Join as a Neighbr
               </Link>
               <Link
                 href="/?as=partner#join"
-                className="border border-cream px-3 py-3.5 text-center font-inter text-[14px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
+                className="border border-cream px-3 py-4 text-center font-inter text-[14px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
               >
                 Become a Partner
               </Link>
@@ -210,83 +218,85 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Desktop / tablet layout */}
-      <div className="hidden min-h-0 flex-1 flex-col lg:flex">
-        <div className="page-x flex flex-1 items-center justify-center pb-6 pt-2 lg:pb-8">
-          <div className="page-shell grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-[190px_minmax(0,1fr)_190px] lg:gap-8 xl:gap-10">
-            <p className="mx-auto max-w-[280px] text-center font-inter text-[15px] leading-[1.1] text-cream sm:text-[16px] lg:mx-0 lg:max-w-none lg:text-left lg:text-[18px]">
-              Your neighborhood is full of places, people, and initiatives to
-              discover.
+      {/* ───────────── Desktop ───────────── */}
+      <div className="hidden min-h-0 flex-1 flex-col justify-center lg:flex">
+        <div className="page-shell page-x w-full">
+          <div className="relative mx-auto aspect-[1028/588] w-full max-w-[calc((100svh_-_6.5rem)*1.748)] [--pw:clamp(162px,19.1cqw,258px)] [container-type:inline-size]">
+            <p className="absolute left-[-3.2cqw] top-[19.1%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[14px] leading-[1.28] text-ivory xl:left-[-2.8cqw] xl:text-[15px]">
+              Your neighborhood is full of places,
+              <br />
+              people, and initiatives to discover
             </p>
 
-            <h1 className="text-center font-playfair text-[clamp(2rem,4.55vw,78px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
+            <h1 className="absolute left-1/2 top-[19.7%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-playfair text-[clamp(2rem,4.82cqw,78px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
               <span className="block">
                 Become an <span className="italic">active</span>
               </span>
               <span className="block">
-                participant <span className="italic">in your local</span>
+                participant <span className="italic">in</span> your local
               </span>
-              <span className="block">community</span>
+              <span className="block italic">community</span>
             </h1>
 
-            <p className="mx-auto max-w-[280px] text-center font-inter text-[15px] leading-[1.1] text-cream sm:text-[16px] lg:mx-0 lg:max-w-none lg:text-right lg:text-[18px]">
-              NeighbrVille helps you find them, connect, and build community.
+            <p className="absolute right-[-3.2cqw] top-[19.1%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[14px] leading-[1.28] text-ivory xl:right-[-2.8cqw] xl:text-[15px]">
+              NeighbrVille helps you find them,
+              <br />
+              connect, and build community
             </p>
-          </div>
-        </div>
 
-        <div className="page-shell page-x relative z-10 w-full shrink-0 overflow-x-clip sm:overflow-visible">
-          <div className="flex origin-bottom scale-100 items-end justify-center pt-2">
-            {polaroids.map((photo, index) => {
-              const isHovered = hovered === index;
+            <div className="absolute inset-x-0 top-[52.9%] z-10 flex -translate-y-1/2 items-center justify-center">
+              {polaroids.map((photo, index) => {
+                const isHovered = hovered === index;
 
-              return (
-                <div
-                  key={photo.src}
-                  className="relative w-[150px] shrink-0 cursor-pointer transition-[transform,filter] duration-300 ease-out md:w-[184px] lg:w-[220px] [&:not(:first-child)]:-ml-7 lg:[&:not(:first-child)]:-ml-10"
-                  style={{
-                    zIndex: isHovered ? 50 : photo.zIndex,
-                    transform: `translateY(${photo.lift + (isHovered ? -10 : 0)}px) rotate(${photo.rotate}deg) scale(${isHovered ? 1.1 : 1})`,
-                  }}
-                  onMouseEnter={() => setHovered(index)}
-                  onMouseLeave={() => setHovered(null)}
-                  onFocus={() => setHovered(index)}
-                  onBlur={() => setHovered(null)}
-                  tabIndex={0}
-                >
+                return (
                   <div
-                    className={`bg-white p-2 pb-8 transition-shadow duration-300 lg:p-[10px] lg:pb-11 ${
-                      isHovered
-                        ? "shadow-[0_24px_48px_rgba(0,0,0,0.45)]"
-                        : "shadow-[0_16px_34px_rgba(0,0,0,0.32)]"
-                    }`}
+                    key={photo.src}
+                    className="relative w-[var(--pw)] shrink-0 cursor-pointer transition-[transform,filter] duration-300 ease-out"
+                    style={{
+                      marginLeft: `calc(var(--pw) * ${photo.ml})`,
+                      zIndex: isHovered ? 50 : photo.zIndex,
+                      transform: `translateY(calc(var(--pw) * ${photo.lift} - ${isHovered ? 10 : 0}px)) rotate(${photo.rotate}deg) scale(${isHovered ? 1.1 : 1})`,
+                    }}
+                    onMouseEnter={() => setHovered(index)}
+                    onMouseLeave={() => setHovered(null)}
+                    onFocus={() => setHovered(index)}
+                    onBlur={() => setHovered(null)}
+                    tabIndex={0}
                   >
-                    <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#ece7df]">
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        sizes="(max-width: 1024px) 184px, 220px"
-                        className={`object-cover transition-transform duration-300 ease-out ${
-                          isHovered ? "scale-105" : "scale-100"
-                        }`}
-                        priority={index < 3}
-                      />
+                    <div
+                      className={`bg-white p-2 pb-8 transition-shadow duration-300 lg:p-[10px] lg:pb-11 ${
+                        isHovered
+                          ? "shadow-[0_24px_48px_rgba(0,0,0,0.45)]"
+                          : "shadow-[0_16px_34px_rgba(0,0,0,0.32)]"
+                      }`}
+                    >
+                      <div className="relative aspect-square w-full overflow-hidden bg-[#ece7df]">
+                        <Image
+                          src={photo.src}
+                          alt={photo.alt}
+                          fill
+                          sizes="(max-width: 1024px) 210px, 258px"
+                          className={`object-cover transition-transform duration-300 ease-out ${
+                            isHovered ? "scale-105" : "scale-100"
+                          }`}
+                          priority={index < 3}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                );
+              })}
+            </div>
 
-        <div className="page-x relative z-20 shrink-0 pb-8 pt-10 text-center lg:pb-10 lg:pt-14">
-          <p className="font-inter text-[12px] leading-[1.1] text-cream lg:text-[13px]">
-            Launching Early 2027 - London &amp; Berlin
-          </p>
-          <p className="mt-3 font-inter text-[11px] font-medium uppercase leading-[1.1] tracking-[0.16em] text-cream lg:text-[12px] lg:tracking-[0.18em]">
-            Free to join. No commitment required
-          </p>
+            <div className="absolute inset-x-0 top-[80.3%] z-20 text-center">
+              <p className="font-inter text-[12px] leading-[1.1] text-ivory lg:text-[13px]">
+                Launching Early 2027 · London &amp; Berlin
+              </p>
+              <p className="mt-4 font-inter text-[11px] font-medium uppercase leading-[1.1] tracking-[0.16em] text-ivory lg:text-[12px] lg:tracking-[0.18em]">
+                Free to join. No commitment required
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

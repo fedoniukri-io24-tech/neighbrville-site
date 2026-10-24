@@ -2,10 +2,13 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 
+/** Same visual bottom gap ratio on mobile and desktop (~desktop +8px look). */
+const BOTTOM_GAP_RATIO = 0.028;
+
 export function FooterWordmark() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [box, setBox] = useState({ scale: 1, height: 0 });
+  const [box, setBox] = useState({ scale: 1, height: 0, gap: 0 });
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
@@ -18,21 +21,24 @@ export function FooterWordmark() {
       const parentWidth = wrap.clientWidth;
       if (!parentWidth) return;
 
-      const prevTransform = text.style.transform;
       text.style.transform = "scale(1)";
       const naturalWidth = text.scrollWidth;
       const naturalHeight = text.offsetHeight;
-      text.style.transform = prevTransform;
 
       if (!naturalWidth) return;
 
       const scale = parentWidth / naturalWidth;
+      text.style.transform = `scale(${scale})`;
+
       const height = Math.ceil(naturalHeight * scale);
+      const gap = Math.max(4, Math.round(height * BOTTOM_GAP_RATIO));
 
       setBox((current) =>
-        Math.abs(current.scale - scale) < 0.001 && current.height === height
+        Math.abs(current.scale - scale) < 0.001 &&
+        current.height === height &&
+        current.gap === gap
           ? current
-          : { scale, height },
+          : { scale, height, gap },
       );
     };
 
@@ -58,8 +64,11 @@ export function FooterWordmark() {
   return (
     <div
       ref={wrapRef}
-      className="relative mt-4 w-full overflow-hidden leading-none"
-      style={{ height: box.height || undefined }}
+      className="relative z-0 mt-4 w-full overflow-x-clip overflow-y-visible leading-none"
+      style={{
+        height: box.height ? box.height + box.gap : undefined,
+        paddingBottom: box.gap || undefined,
+      }}
     >
       <p
         ref={textRef}

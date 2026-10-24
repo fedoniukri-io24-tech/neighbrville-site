@@ -18,8 +18,8 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="snap-block bg-cream text-chocolate">
-      <div className="page-shell page-x flex flex-col gap-10 overflow-x-clip pb-6 pt-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-12 lg:pb-6 lg:pt-16">
+    <footer className="snap-block overflow-x-clip bg-cream text-chocolate">
+      <div className="page-shell page-x relative z-10 flex flex-col gap-10 overflow-x-clip py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-12 lg:py-16">
         <div className="order-2 grid grid-cols-1 gap-y-4 lg:order-1 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-10">
           <div className="hidden lg:block">
             <p className="font-inter text-[11px] uppercase tracking-[0.14em]">Menu</p>

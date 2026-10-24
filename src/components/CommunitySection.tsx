@@ -8,47 +8,47 @@ const photos = [
   {
     src: "/images/community/library.png",
     alt: "Sunlit neighborhood bookshop",
-    box: { left: "0%", top: "16%", width: "11.5%", height: "22%" },
+    box: { left: "2.8%", top: "20.4%", width: "12%", height: "19.1%" },
   },
   {
     src: "/images/community/circle.png",
     alt: "Neighbors sitting together in a circle",
-    box: { left: "18%", top: "5%", width: "16%", height: "16%" },
+    box: { left: "24.4%", top: "11.6%", width: "12.8%", height: "14.2%" },
   },
   {
     src: "/images/community/watercolor.png",
     alt: "Hands painting with watercolors",
-    box: { left: "48%", top: "3%", width: "17%", height: "15%" },
+    box: { left: "52.9%", top: "8.6%", width: "14.5%", height: "12.6%" },
   },
   {
     src: "/images/community/workshop.png",
     alt: "People gathered around a workshop table",
-    box: { left: "87%", top: "12%", width: "13%", height: "18%" },
+    box: { left: "80.3%", top: "16.8%", width: "11.1%", height: "18%" },
   },
   {
     src: "/images/community/performance.png",
     alt: "A neighbor performing on a rug",
-    box: { left: "2.5%", top: "50%", width: "10.5%", height: "20%" },
+    box: { left: "9.6%", top: "53.3%", width: "8.9%", height: "18.3%" },
   },
   {
     src: "/images/community/books.png",
     alt: "Stacks of books on a wooden table",
-    box: { left: "88.5%", top: "42%", width: "11.5%", height: "26%" },
+    box: { left: "85.3%", top: "47.7%", width: "11.7%", height: "19.4%" },
   },
   {
     src: "/images/community/makers.png",
     alt: "A shared makers table under pendant lamps",
-    box: { left: "20%", top: "64%", width: "17%", height: "15%" },
+    box: { left: "25%", top: "70.1%", width: "14.6%", height: "12%" },
   },
   {
     src: "/images/community/pottery.png",
     alt: "Hands shaping a clay pot",
-    box: { left: "46%", top: "60%", width: "11%", height: "17%" },
+    box: { left: "52.5%", top: "63.5%", width: "9.1%", height: "15.8%" },
   },
   {
     src: "/images/community/repair.png",
     alt: "Neighbors repairing things together",
-    box: { left: "68%", top: "66%", width: "16%", height: "14%" },
+    box: { left: "72.6%", top: "74.3%", width: "12.4%", height: "10.5%" },
   },
 ];
 
@@ -101,60 +101,63 @@ export function CommunitySection() {
             />
           ))}
 
-          <div className="pointer-events-none absolute inset-x-[20%] top-[26%] z-10 text-center">
-            <p className="font-inter text-[11px] font-medium uppercase tracking-[0.24em] xl:text-[12px]">
+          <div className="pointer-events-none absolute inset-x-[10%] top-[32.4%] z-10 text-center">
+            <p className="font-inter text-[11px] font-medium uppercase tracking-[0.24em] text-ivory xl:text-[12px]">
               Built by the neighborhood
             </p>
 
-            <h2 className="mx-auto mt-4 max-w-[920px] font-playfair text-[clamp(2.1rem,4.5vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
-              <span className="block whitespace-nowrap">Everything your community</span>
+            <h2 className="mx-auto mt-6 max-w-[1000px] font-playfair text-[clamp(2.1rem,4.5vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
               <span className="block whitespace-nowrap">
-                has to offer in{" "}
+                Everything your <span className="italic">community</span>
+              </span>
+              <span className="block whitespace-nowrap">
+                <span className="italic">has to</span> offer in{" "}
                 <span className="italic text-cream/40">one place</span>
               </span>
             </h2>
 
-            <p className="mt-5 font-inter text-[12px] font-medium uppercase tracking-[0.06em] xl:text-[13px]">
+            <p className="mt-7 whitespace-nowrap font-inter text-[12px] font-normal uppercase tracking-[0.06em] text-ivory xl:text-[13px]">
               You offer events, spaces, programs, or something else entirely?
             </p>
 
-            <p className="mx-auto mt-3 max-w-[440px] font-inter text-[13px] leading-[1.35] text-cream xl:text-[14px]">
+            <p className="mx-auto mt-1 max-w-[470px] font-inter text-[13px] leading-[1.35] text-ivory xl:text-[14px]">
               NeighbrVille helps more people discover it! Whether you host events
               or contribute to your local life in broader ways, you belong here
             </p>
           </div>
 
           <Link
-            href="#partner"
-            className="absolute bottom-[5%] left-1/2 z-10 -translate-x-1/2 font-playfair text-[clamp(1.35rem,1.7vw,1.85rem)] italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
+            href="/?as=partner#join"
+            className="absolute bottom-[9.4%] left-1/2 z-10 -translate-x-1/2 font-playfair text-[clamp(1.35rem,1.7vw,1.85rem)] italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
           >
             Become a partner
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-clip py-8 pt-24 lg:hidden">
-        <div className="relative mx-auto mt-6 h-[380px] w-full max-w-[440px]">
+      <div className="overflow-x-clip pb-8 pt-8 lg:hidden">
+        {/* Top photo cluster */}
+        <div className="relative mx-auto aspect-[440/220] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/circle.png",
               alt: "Neighbors sitting together in a circle",
-              className: "left-[4%] top-[6%] w-[40%] aspect-[5/4]",
+              className: "left-[22.7%] top-[0%] w-[26.1%] aspect-[3/2]",
             },
             {
               src: "/images/community/workshop.png",
               alt: "People gathered around a workshop table",
-              className: "right-[4%] top-[8%] w-[34%] aspect-[4/3]",
+              className: "left-[76.4%] top-[6%] w-[20%] aspect-square",
             },
             {
               src: "/images/community/library.png",
               alt: "Sunlit neighborhood bookshop",
-              className: "left-[3%] top-[56%] w-[28%] aspect-[3/4]",
+              className: "left-0 top-[40%] w-[21.8%] aspect-[96/93]",
             },
             {
               src: "/images/community/watercolor.png",
               alt: "Hands painting with watercolors",
-              className: "right-[8%] top-[54%] w-[34%] aspect-[5/4]",
+              className: "left-[53.4%] top-[58%] w-[27.5%] aspect-[121/63]",
             },
           ].map((photo) => (
             <InteractivePhoto
@@ -168,11 +171,11 @@ export function CommunitySection() {
           ))}
         </div>
 
-        <div className="page-x mx-auto max-w-[420px] py-10 text-center">
-          <p className="font-inter text-[11px] font-medium uppercase tracking-[0.18em]">
+        <div className="page-x mx-auto -mt-2 max-w-[420px] pt-2 text-center">
+          <p className="font-inter text-[11px] font-medium uppercase tracking-[0.18em] text-ivory">
             Built by the neighborhood
           </p>
-          <h2 className="mt-4 font-playfair text-[clamp(1.7rem,7.6vw,2.35rem)] font-normal uppercase leading-[0.95] tracking-[-0.04em]">
+          <h2 className="mt-5 font-playfair text-[clamp(1.7rem,7.6vw,2.35rem)] font-normal uppercase leading-[0.95] tracking-[-0.04em]">
             <span className="block">Everything your</span>
             <span className="block">
               community <span className="italic">has to</span>
@@ -181,41 +184,42 @@ export function CommunitySection() {
               offer in <span className="italic text-cream/40">one place</span>
             </span>
           </h2>
-          <p className="mt-5 font-inter text-[12px] font-semibold uppercase tracking-[0.04em]">
+          <p className="mx-auto mt-6 whitespace-nowrap font-inter text-[clamp(9px,2.8vw,11px)] font-normal uppercase leading-none tracking-[0.02em] text-ivory">
             Have events, spaces, or programs to offer?
           </p>
-          <p className="mx-auto mt-2 max-w-[34ch] font-inter text-[14px] leading-[1.35]">
+          <p className="mx-auto mt-2 max-w-[360px] font-inter text-[13px] leading-[1.35] text-ivory">
             NeighbrVille helps more people discover it! Whether you host events
             or contribute to your local life in broader ways, you belong here
           </p>
         </div>
 
-        <div className="relative mx-auto mt-6 h-[540px] w-full max-w-[440px]">
+        {/* Bottom photo cluster */}
+        <div className="relative mx-auto mt-3 aspect-[440/280] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/performance.png",
               alt: "A neighbor performing on a rug",
-              className: "left-[3%] top-[6%] w-[34%] aspect-[4/5]",
+              className: "left-[4.5%] top-[2.5%] w-[17.3%] aspect-[4/5]",
             },
             {
               src: "/images/community/pottery.png",
               alt: "Hands shaping a clay pot",
-              className: "left-[39%] top-[34%] w-[24%] aspect-square",
+              className: "left-[36.6%] top-[28.9%] w-[18%] aspect-square",
             },
             {
               src: "/images/community/repair.png",
               alt: "Neighbors repairing things together",
-              className: "right-[3%] top-[8%] w-[32%] aspect-[5/4]",
+              className: "left-[67.5%] top-[10.7%] w-[33.6%] aspect-[37/20]",
             },
             {
               src: "/images/community/makers.png",
               alt: "A shared makers table under pendant lamps",
-              className: "left-[4%] top-[58%] w-[44%] aspect-[5/3]",
+              className: "left-0 top-[66.8%] w-[38.4%] aspect-[2/1]",
             },
             {
               src: "/images/community/books.png",
               alt: "Stacks of books on a wooden table",
-              className: "right-[4%] top-[56%] w-[28%] aspect-[3/4]",
+              className: "left-[70.9%] top-[58.6%] w-[19.5%] aspect-square",
             },
           ].map((photo) => (
             <InteractivePhoto
@@ -229,9 +233,9 @@ export function CommunitySection() {
           ))}
         </div>
 
-        <div className="page-x mt-8 text-center">
+        <div className="page-x mt-10 text-center">
           <Link
-            href="#partner"
+            href="/?as=partner#join"
             className="font-playfair text-[clamp(1.7rem,7vw,2.1rem)] italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px]"
           >
             Become a partner

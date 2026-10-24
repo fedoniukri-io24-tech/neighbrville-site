@@ -8,11 +8,12 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="snap-block bg-chocolate text-cream lg:min-h-dvh">
+    <section id="faq" className="snap-block min-h-dvh bg-chocolate text-cream">
       <div className="page-shell page-x grid grid-cols-1 gap-8 py-12 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-12 lg:py-24">
         <h2 className="font-playfair text-[clamp(2rem,9vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em] lg:sticky lg:top-10 lg:self-start lg:text-[clamp(2.1rem,4.5vw,64px)]">
-          <span className="block">Frequently</span>
-          <span className="block italic">asked</span>
+          <span className="block whitespace-nowrap">
+            Frequently <span className="italic">asked</span>
+          </span>
           <span className="block">questions</span>
         </h2>
 
@@ -21,10 +22,10 @@ export function FaqSection() {
             const isOpen = openIndex === index;
 
             return (
-              <div key={item.question} className="border-b border-white/30">
+              <div key={item.question} className="border-b border-ivory/30">
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between gap-4 py-3.5 text-left text-white lg:gap-6 lg:py-5"
+                  className="flex w-full items-center justify-between gap-4 py-3.5 text-left text-ivory lg:gap-6 lg:py-5"
                   aria-expanded={isOpen}
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                 >
@@ -33,7 +34,7 @@ export function FaqSection() {
                   </span>
                   <span
                     aria-hidden
-                    className="shrink-0 font-inter text-[20px] leading-none text-white lg:text-[26px]"
+                    className="shrink-0 font-inter text-[20px] leading-none text-ivory lg:text-[26px]"
                   >
                     {isOpen ? "−" : "+"}
                   </span>
@@ -44,7 +45,7 @@ export function FaqSection() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="max-w-[680px] pb-5 font-inter text-[16px] leading-[1.4] text-white sm:text-[18px]">
+                    <p className="max-w-[680px] pb-5 font-inter text-[16px] leading-[1.4] text-ivory sm:text-[18px]">
                       {item.answer}
                     </p>
                   </div>
