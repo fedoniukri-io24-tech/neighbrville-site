@@ -64,12 +64,13 @@ footer {
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
-  /* Snap so full-viewport blocks settle fully (desktop + mobile) */
-  scroll-snap-type: y mandatory;
+  /* proximity = softer settle; mandatory felt sticky / fought tall sections */
+  scroll-snap-type: y proximity;
 }
 
-/* Avoid snap fighting join panel smooth-scroll */
-html.join-open {
+/* Pause snap while join form or mobile menu is open */
+html.join-open,
+html.menu-open {
   scroll-snap-type: none;
 }
 
@@ -77,9 +78,21 @@ html.join-open {
   html {
     scroll-snap-type: none;
   }
+}
 
-  html.join-open {
+/* Desktop: firmer snap for full-viewport blocks */
+@media (min-width: 1024px) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+
+  html.join-open,
+  html.menu-open {
     scroll-snap-type: none;
+  }
+
+  .snap-block {
+    scroll-snap-stop: always;
   }
 }
 
@@ -93,12 +106,13 @@ body {
 
 .snap-block {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
 }
 
+/* Experience scroll stages — allow passing without hard lock */
 .snap-step {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
 }
 
 .page-shell {

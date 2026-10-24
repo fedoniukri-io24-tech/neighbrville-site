@@ -27,24 +27,27 @@ const JoinSection = dynamic(
 
 export default function Home() {
   return (
-    <main className="overflow-x-clip">
-      <a
-        href="#about"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-cream focus:px-4 focus:py-2 focus:text-chocolate"
-      >
-        Skip to content
-      </a>
-      <JsonLd data={faqJsonLd([...faqs])} />
-      <section className="snap-block flex min-h-dvh flex-col overflow-x-clip overflow-y-visible bg-chocolate">
-        <Header />
-        <Hero />
-      </section>
-      <ValueSection />
-      <ExperiencesSection />
-      <CommunitySection />
-      <JoinSection />
-      <FaqSection />
-      <Footer />
-    </main>
+    <>
+      {/* Outside overflow-clip so position:fixed stays viewport-bound site-wide */}
+      <Header />
+      <main className="overflow-x-clip">
+        <a
+          href="#about"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-cream focus:px-4 focus:py-2 focus:text-chocolate"
+        >
+          Skip to content
+        </a>
+        <JsonLd data={faqJsonLd([...faqs])} />
+        <section className="snap-block flex min-h-dvh flex-col overflow-x-clip overflow-y-visible bg-chocolate">
+          <Hero />
+        </section>
+        <ValueSection />
+        <ExperiencesSection />
+        <CommunitySection />
+        <JoinSection />
+        <FaqSection />
+        <Footer />
+      </main>
+    </>
   );
 }

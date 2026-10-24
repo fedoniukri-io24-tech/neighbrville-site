@@ -177,7 +177,7 @@ function headlineLineClass(
 function ExperienceMarquee() {
   return (
     <div
-      className="experience-marquee-band relative z-50 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate py-2 lg:py-2.5"
+      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate py-2 lg:py-2.5"
       aria-hidden
     >
       <div className="experience-marquee-track flex w-max animate-marquee items-center whitespace-nowrap will-change-transform">

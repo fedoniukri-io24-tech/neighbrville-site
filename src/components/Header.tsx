@@ -23,6 +23,7 @@ export function Header() {
     };
 
     document.addEventListener("keydown", onKeyDown);
+    document.documentElement.classList.add("menu-open");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
     document.body.style.position = "fixed";
@@ -33,6 +34,7 @@ export function Header() {
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
+      document.documentElement.classList.remove("menu-open");
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       document.body.style.position = "";
@@ -46,7 +48,7 @@ export function Header() {
 
   return (
     <>
-      <header className="page-x fixed inset-x-0 top-0 z-50 bg-chocolate py-3 sm:py-3.5 lg:py-4">
+      <header className="page-x fixed inset-x-0 top-0 z-[200] bg-chocolate py-3 sm:py-3.5 lg:py-4">
         <div className="page-shell relative flex items-center justify-between gap-2 sm:gap-4">
           <Link href="/" className="relative z-10 shrink-0">
             <Image
@@ -117,34 +119,36 @@ export function Header() {
         </div>
 
         {menuOpen ? (
-          <div className="page-shell absolute inset-x-0 top-full z-50 border-t border-cream/15 bg-chocolate px-[var(--page-gutter-x)] pb-8 pt-6 md:hidden">
-            <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
-              {navLinks.map((link) => (
+          <div className="fixed inset-x-0 top-[calc(0.75rem+40px)] bottom-0 z-[200] overflow-y-auto border-t border-cream/15 bg-chocolate px-[var(--page-gutter-x)] pb-10 pt-6 md:hidden sm:top-[calc(0.875rem+40px)]">
+            <div className="page-shell">
+              <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="font-inter text-[18px] text-ivory"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="mt-8 grid grid-cols-2 gap-2.5">
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="font-inter text-[18px] text-ivory"
+                  href="/?as=neighbr#join"
                   onClick={() => setMenuOpen(false)}
+                  className="bg-cream px-3 py-3.5 text-center font-inter text-[11px] font-medium leading-none text-chocolate"
                 >
-                  {link.label}
+                  Join as a Neighbr
                 </Link>
-              ))}
-            </nav>
-            <div className="mt-8 grid grid-cols-2 gap-2.5">
-              <Link
-                href="/?as=neighbr#join"
-                onClick={() => setMenuOpen(false)}
-                className="bg-cream px-3 py-3.5 text-center font-inter text-[11px] font-medium leading-none text-chocolate"
-              >
-                Join as a Neighbr
-              </Link>
-              <Link
-                href="/?as=partner#join"
-                onClick={() => setMenuOpen(false)}
-                className="border border-cream px-3 py-3.5 text-center font-inter text-[11px] font-normal leading-none text-cream"
-              >
-                Become a Partner
-              </Link>
+                <Link
+                  href="/?as=partner#join"
+                  onClick={() => setMenuOpen(false)}
+                  className="border border-cream px-3 py-3.5 text-center font-inter text-[11px] font-normal leading-none text-cream"
+                >
+                  Become a Partner
+                </Link>
+              </div>
             </div>
           </div>
         ) : null}
