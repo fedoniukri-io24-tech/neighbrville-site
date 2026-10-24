@@ -158,6 +158,15 @@ function cardStackMotion(
   };
 }
 
+/** 0 at the previous line, 1 on this line, fading into the next. No step jumps. */
+function lineOpacity(index: number, progress: number) {
+  const cursor = progress * (cards.length - 1);
+  const dist = cursor - index;
+  if (dist < -0.45) return 0.2;
+  const focus = 1 - Math.min(Math.abs(dist) / 0.85, 1);
+  return 0.22 + focus * 0.78;
+}
+
 function headlineLineClass(
   isActive: boolean,
   isRevealed: boolean,
@@ -298,7 +307,7 @@ function MobileStack({
   onActivate: (index: number) => void;
 }) {
   return (
-    <div className="relative -mt-[0.6cqw] -mb-[2cqw] aspect-[324/352] w-full">
+    <div className="relative h-full min-h-0 w-full">
       {cards.map((card, index) => {
         const isActive = activeIndex === index;
         const motion = cardStackMotion(
@@ -405,10 +414,14 @@ export function ExperiencesSection() {
 
     let frame = 0;
     let listening = false;
+    // Freeze viewport height during a touch so the URL bar doesn't
+    // resize the scroll range and shake the pinned block.
+    let stableVh = window.innerHeight;
+    let touching = false;
 
     const update = () => {
       const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
+      const vh = touching ? stableVh : window.innerHeight;
       const total = Math.max(section.offsetHeight - vh, 1);
 
       const next =
@@ -428,11 +441,25 @@ export function ExperiencesSection() {
       frame = requestAnimationFrame(update);
     };
 
+    const onTouchStart = () => {
+      touching = true;
+      stableVh = window.innerHeight;
+    };
+    const onTouchEnd = () => {
+      touching = false;
+      stableVh = window.innerHeight;
+      onScroll();
+    };
+
     const start = () => {
       if (listening) return;
       listening = true;
+      stableVh = window.innerHeight;
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onScroll, { passive: true });
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+      window.addEventListener("touchend", onTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
       update();
     };
 
@@ -442,6 +469,9 @@ export function ExperiencesSection() {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
     };
 
     const observer = new IntersectionObserver(
@@ -487,33 +517,31 @@ export function ExperiencesSection() {
       </span>
 
       <div
-        className={`flex flex-col overflow-visible lg:hidden ${
-          reduceMotion ? "" : "sticky top-0"
+        className={`flex flex-col overflow-hidden lg:hidden ${
+          reduceMotion
+            ? ""
+            : "sticky top-[var(--header-space)] h-[calc(100svh-var(--header-space))]"
         }`}
       >
-        <div className="page-shell page-x mx-auto w-full max-w-[520px] [container-type:inline-size]">
-          <div className="flex flex-col items-stretch pt-[14.8cqw] text-left">
+        <div className="page-shell page-x mx-auto flex h-full min-h-0 w-full max-w-[520px] flex-col [container-type:inline-size]">
+          <div className="flex min-h-0 flex-1 flex-col items-stretch pt-[4svh] text-left">
             <p className="font-inter text-[2.56cqw] uppercase leading-none text-ivory">
               Find something that feels like you
             </p>
 
             <h2
-              className={`relative z-20 mt-[5.7cqw] w-full text-left font-playfair text-[8.6cqw] font-normal uppercase leading-[1.03] tracking-[-0.045em] ${headingBase}`}
+              className={`relative z-20 mt-[2.2svh] w-full shrink-0 text-left font-playfair text-[8.6cqw] font-normal uppercase leading-[1.03] tracking-[-0.045em] text-cream`}
             >
               {cards.map((card, index) => {
                 const isActive = mobileActive === index;
-                const isRevealed = index <= scrollIndex;
 
                 return (
                   <button
                     key={`mobile-${card.title}`}
                     type="button"
                     disabled={!canSwitchCards}
-                    className={headlineLineClass(
-                      isActive,
-                      isRevealed,
-                      canSwitchCards,
-                    )}
+                    className="block w-full text-left uppercase disabled:cursor-default"
+                    style={{ opacity: lineOpacity(index, motionProgress) }}
                     onClick={() => {
                       if (!canSwitchCards) return;
                       setActiveMobile((current) =>
@@ -528,7 +556,7 @@ export function ExperiencesSection() {
               })}
             </h2>
 
-            <div className="w-full">
+            <div className="mt-[1.5svh] min-h-0 w-full flex-1">
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}
