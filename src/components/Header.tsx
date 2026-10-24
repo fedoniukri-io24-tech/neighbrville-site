@@ -50,7 +50,16 @@ export function Header() {
     <>
       <header className="page-x fixed inset-x-0 top-0 z-[200] bg-chocolate py-3 sm:py-3.5 lg:py-4">
         <div className="page-shell relative flex items-center justify-between gap-2 sm:gap-4">
-          <Link href="/" className="relative z-10 shrink-0">
+          <Link
+            href="/#hero"
+            className="relative z-10 shrink-0"
+            onClick={(event) => {
+              setMenuOpen(false);
+              if (window.location.pathname !== "/") return;
+              event.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             <Image
               src="/brand/logo.svg"
               alt="NeighbrVille"

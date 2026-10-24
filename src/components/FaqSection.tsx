@@ -8,7 +8,7 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="snap-block min-h-dvh bg-chocolate text-cream">
+    <section id="faq" className="snap-block bg-chocolate text-cream lg:min-h-dvh">
       <div className="page-shell page-x grid grid-cols-1 gap-8 py-12 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-12 lg:py-24">
         <h2 className="font-playfair text-[clamp(2rem,9vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em] lg:sticky lg:top-10 lg:self-start lg:text-[clamp(2.1rem,4.5vw,64px)]">
           <span className="block whitespace-nowrap">

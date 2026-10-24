@@ -4,7 +4,7 @@ export function ValueSection() {
   return (
     <section
       id="about"
-      className="snap-block grid min-h-dvh grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2 lg:items-stretch"
+      className="snap-block grid min-h-svh grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2 lg:items-stretch"
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image

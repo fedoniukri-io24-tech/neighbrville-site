@@ -4,6 +4,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { MobileSectionSnap } from "@/components/MobileSectionSnap";
 import { JsonLd, faqJsonLd } from "@/components/JsonLd";
 import { ValueSection } from "@/components/ValueSection";
 import { faqs } from "@/lib/faq";
@@ -30,6 +31,7 @@ export default function Home() {
     <>
       {/* Outside overflow-clip so position:fixed stays viewport-bound site-wide */}
       <Header />
+      <MobileSectionSnap />
       <main className="overflow-x-clip">
         <a
           href="#about"
@@ -38,7 +40,10 @@ export default function Home() {
           Skip to content
         </a>
         <JsonLd data={faqJsonLd([...faqs])} />
-        <section className="snap-block flex min-h-dvh flex-col overflow-x-clip overflow-y-visible bg-chocolate">
+        <section
+          id="hero"
+          className="snap-block flex min-h-[calc(100svh-var(--header-space))] flex-col overflow-x-clip overflow-y-visible bg-chocolate lg:min-h-[calc(100dvh-var(--header-space))]"
+        >
           <Hero />
         </section>
         <ValueSection />

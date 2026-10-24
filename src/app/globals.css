@@ -12,12 +12,35 @@
   /* Matches Community side-photo inset (left ~1.2% of frame) */
   --page-gutter-x: clamp(1.25rem, 1.2vw, 1.75rem);
   --page-max: 1440px;
-  --join-first-height: 100dvh;
+  /* Fixed header spacer: py-3 + h-10, then sm / md / lg */
+  --header-space: 4rem;
+  /* svh stays still while the mobile URL bar shows and hides */
+  --join-first-height: 100svh;
   --join-panel-height: 100dvh;
   --join-panel-lift: clamp(1.25rem, 4vh, 2.75rem);
   --join-mobile-panel-top: clamp(3.25rem, 12vh, 5.5rem);
   /* Tall enough for waitlist + long mobile profile without JS resize */
-  --join-photo-height: calc(var(--join-first-height) + 220dvh);
+  --join-photo-height: calc(var(--join-first-height) + 220svh);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-space: 4.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-space: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-space: 4rem;
+    --join-first-height: 100dvh;
+    --join-photo-height: calc(var(--join-first-height) + 220dvh);
+  }
 }
 
 .join-section {
@@ -33,13 +56,6 @@
 .join-section__photo {
   height: var(--join-photo-height);
   contain: paint;
-}
-
-/* Skip offscreen layout work for static lower sections */
-#faq,
-footer {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 800px;
 }
 
 .join-expanded-panel {
@@ -64,23 +80,11 @@ footer {
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
-  /* proximity = softer settle; mandatory felt sticky / fought tall sections */
-  scroll-snap-type: y proximity;
-}
-
-/* Pause snap while join form or mobile menu is open */
-html.join-open,
-html.menu-open {
+  /* Mobile snap is handled in JS so tall sections and the URL bar don't fight it */
   scroll-snap-type: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-snap-type: none;
-  }
-}
-
-/* Desktop: firmer snap for full-viewport blocks */
+/* Desktop: snap full-viewport blocks. Off while a panel or the menu is open. */
 @media (min-width: 1024px) {
   html {
     scroll-snap-type: y mandatory;
@@ -91,8 +95,16 @@ html.menu-open {
     scroll-snap-type: none;
   }
 
-  .snap-block {
+  .snap-block,
+  .snap-step {
+    scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
   }
 }
 
@@ -104,16 +116,7 @@ body {
   max-width: 100%;
 }
 
-.snap-block {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
-}
-
-/* Experience scroll stages — allow passing without hard lock */
-.snap-step {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
-}
+/* Snap alignment is desktop-only (see the 1024px block above). */
 
 .page-shell {
   width: 100%;
