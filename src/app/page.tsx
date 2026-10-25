@@ -42,8 +42,12 @@ export default function Home() {
         <JsonLd data={faqJsonLd([...faqs])} />
         <section
           id="hero"
-          className="snap-block flex min-h-[calc(100svh-var(--header-space))] flex-col overflow-x-clip overflow-y-visible bg-chocolate lg:min-h-[calc(100dvh-var(--header-space))]"
+          className="snap-block flex min-h-svh flex-col overflow-x-clip overflow-y-visible bg-chocolate lg:min-h-dvh"
         >
+          {/* In-flow header space, inside the snap so the first screen is exactly one viewport */}
+          <div className="shrink-0 py-3 sm:py-3.5 lg:py-4" aria-hidden>
+            <div className="h-10 md:h-[28px] lg:h-[32px]" />
+          </div>
           <Hero />
         </section>
         <ValueSection />

@@ -99,6 +99,12 @@ html {
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
+
+  /* Last block is shorter than the screen. Align its bottom so the page
+     background doesn't show as a strip under the wordmark. */
+  footer.snap-block {
+    scroll-snap-align: end;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

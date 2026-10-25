@@ -162,10 +162,6 @@ export function Header() {
           </div>
         ) : null}
       </header>
-      {/* Matches fixed header height so layout doesn’t jump */}
-      <div className="shrink-0 py-3 sm:py-3.5 lg:py-4" aria-hidden>
-        <div className="h-10 md:h-[28px] lg:h-[32px]" />
-      </div>
     </>
   );
 }
