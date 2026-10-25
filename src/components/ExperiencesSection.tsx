@@ -372,6 +372,7 @@ function MobileStack({
 
 export function ExperiencesSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const mobilePinRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
   const [activeMobile, setActiveMobile] = useState<number | null>(null);
@@ -418,18 +419,47 @@ export function ExperiencesSection() {
     // resize the scroll range and shake the pinned block.
     let stableVh = window.innerHeight;
     let touching = false;
+    let pin: "before" | "fixed" | "after" = "before";
+
+    const layoutPin = () => {
+      const el = mobilePinRef.current;
+      if (!el) return 0;
+      const header = document.querySelector("header")?.offsetHeight ?? 0;
+      const height = Math.max(0, stableVh - header);
+      if (el.dataset.pinH !== String(height)) {
+        el.dataset.pinH = String(height);
+        el.style.height = `${height}px`;
+      }
+      return header;
+    };
+
+    const applyPin = (next: "before" | "fixed" | "after", header: number) => {
+      const el = mobilePinRef.current;
+      if (!el || pin === next) return;
+      pin = next;
+      el.style.position = next === "fixed" ? "fixed" : "absolute";
+      el.style.top = next === "after" ? "auto" : next === "fixed" ? `${header}px` : "0px";
+      el.style.bottom = next === "after" ? "0px" : "auto";
+    };
 
     const update = () => {
       const rect = section.getBoundingClientRect();
       const vh = touching ? stableVh : window.innerHeight;
       const total = Math.max(section.offsetHeight - vh, 1);
+      const header = layoutPin();
+      const panelH = Number(mobilePinRef.current?.dataset.pinH || vh - header);
+      const panelBottom = header + panelH;
+
+      if (rect.top > header) applyPin("before", header);
+      else if (rect.bottom < panelBottom) applyPin("after", header);
+      else applyPin("fixed", header);
 
       const next =
-        rect.top > 0
+        rect.top > header
           ? 0
-          : rect.bottom <= vh * 0.12
+          : rect.bottom <= panelBottom
             ? 1
-            : clamp(-rect.top, 0, total) / total;
+            : clamp(header - rect.top, 0, total) / total;
 
       setProgress((current) =>
         Math.abs(current - next) < 0.002 ? current : next,
@@ -517,10 +547,9 @@ export function ExperiencesSection() {
       </span>
 
       <div
-        className={`flex flex-col overflow-hidden lg:hidden ${
-          reduceMotion
-            ? ""
-            : "sticky top-[var(--header-space)] h-[calc(100svh-var(--header-space))]"
+        ref={mobilePinRef}
+        className={`inset-x-0 z-20 flex h-[calc(100svh-var(--header-space))] flex-col overflow-hidden bg-chocolate lg:hidden ${
+          reduceMotion ? "relative" : "absolute top-0"
         }`}
       >
         <div className="page-shell page-x mx-auto flex h-full min-h-0 w-full max-w-[520px] flex-col [container-type:inline-size]">
