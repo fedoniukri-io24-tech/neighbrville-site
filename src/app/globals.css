@@ -37,7 +37,7 @@
 
 @media (min-width: 1024px) {
   :root {
-    --header-space: 4rem;
+    --header-space: 3rem;
     --join-first-height: 100dvh;
     --join-photo-height: calc(var(--join-first-height) + 220dvh);
   }
@@ -90,7 +90,8 @@ html {
   }
 
   html.join-open,
-  html.menu-open {
+  html.menu-open,
+  html.faq-open {
     scroll-snap-type: none;
   }
 

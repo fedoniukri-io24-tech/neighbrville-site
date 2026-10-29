@@ -45,8 +45,11 @@ export default function Home() {
           className="snap-block flex min-h-svh flex-col overflow-x-clip overflow-y-visible bg-chocolate lg:min-h-dvh"
         >
           {/* In-flow header space, inside the snap so the first screen is exactly one viewport */}
-          <div className="shrink-0 py-3 sm:py-3.5 lg:py-4" aria-hidden>
-            <div className="h-10 md:h-[28px] lg:h-[32px]" />
+          <div
+            className="shrink-0 max-lg:h-[var(--header-space)] lg:py-2"
+            aria-hidden
+          >
+            <div className="hidden h-[32px] lg:block" />
           </div>
           <Hero />
         </section>

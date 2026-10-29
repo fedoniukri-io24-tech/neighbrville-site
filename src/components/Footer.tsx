@@ -84,14 +84,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="order-1 flex flex-col items-start lg:order-2 lg:items-end">
-          <div className="w-full max-w-[460px] lg:text-right">
+        <div className="order-1 flex w-full flex-col items-start lg:order-2 lg:items-stretch">
+          <div className="w-full max-w-[460px] lg:max-w-none">
             <p className="font-playfair text-[clamp(2.35rem,9.5vw,3rem)] font-normal uppercase italic leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2rem,3.4vw,52px)] lg:leading-[0.9]">
-              Find your people
-              <br />
-              feel at home
+              <span className="block lg:text-left">Find your people</span>
+              <span className="block lg:text-right">feel at home</span>
             </p>
-            <div className="mt-8 hidden items-center justify-between gap-6 font-inter text-[13px] lg:mt-10 lg:flex">
+            <div className="mt-8 hidden w-full items-center justify-between gap-6 font-inter text-[13px] lg:mt-10 lg:flex">
               <p>©2026 All rights reserved</p>
               <Link href="#privacy" className="transition-opacity hover:opacity-70">
                 Privacy Policy

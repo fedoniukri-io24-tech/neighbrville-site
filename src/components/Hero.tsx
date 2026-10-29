@@ -22,7 +22,7 @@ const polaroids = [
     alt: "Friends gathered in a living room",
     rotate: -5,
     lift: 0,
-    ml: 0.048,
+    ml: 0.1,
     zIndex: 4,
   },
   {
@@ -38,7 +38,7 @@ const polaroids = [
     alt: "Friends talking around a picnic table",
     rotate: 7,
     lift: 0.064,
-    ml: -0.228,
+    ml: -0.15,
     zIndex: 5,
   },
   {
@@ -46,7 +46,7 @@ const polaroids = [
     alt: "Hands shaping clay on a pottery wheel",
     rotate: 10,
     lift: -0.162,
-    ml: -0.208,
+    ml: -0.13,
     zIndex: 3,
   },
 ];
@@ -131,85 +131,91 @@ export function Hero() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* ───────────── Mobile ───────────── */}
-      <div className="page-x flex flex-1 flex-col overflow-visible pb-5 pt-28 lg:hidden">
-        <div className="page-shell flex flex-1 flex-col overflow-visible">
-          <h1 className="relative text-left font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
-            <span className="block whitespace-nowrap">
-              Become an <span className="italic">active</span>
-            </span>
-            <span className="flex items-end justify-start gap-1.5">
-              <span>participant</span>
-              <span className="mb-[0.38em] shrink-0 font-inter text-[10px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
-                Launching Early 2027
+      {/* Header space already lives in #hero — keep only a tight top gap here
+          so the whole composition fits one svh. */}
+      <div className="page-x flex min-h-0 flex-1 flex-col justify-between overflow-visible pb-3 pt-30 lg:hidden">
+        <div className="page-shell flex min-h-0 flex-1 flex-col justify-between overflow-visible">
+          {/* Headline + photos share one flex slot so justify-between
+              can't stretch the gap between them. */}
+          <div className="shrink-0">
+            <h1 className="relative text-left font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
+              <span className="block whitespace-nowrap">
+                Become an <span className="italic">active</span>
               </span>
-            </span>
-          </h1>
+              <span className="flex items-end justify-start gap-1.5">
+                <span>participant</span>
+                <span className="mb-[0.38em] shrink-0 font-inter text-[11px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
+                  Launching Early 2027
+                </span>
+              </span>
+            </h1>
 
-          <div className="relative left-1/2 z-10 mt-1 aspect-[312/245] w-screen max-w-[440px] -translate-x-1/2 overflow-visible">
-            {mobilePolaroids.map((photo, index) => {
-              const isActive = activeMobile === index;
+            <div className="relative left-1/2 z-10 mt-1 aspect-[312/220] w-screen max-h-[34svh] max-w-[440px] min-h-0 -translate-x-1/2 overflow-visible">
+              {mobilePolaroids.map((photo, index) => {
+                const isActive = activeMobile === index;
 
-              return (
-                <button
-                  key={photo.src}
-                  type="button"
-                  aria-label={photo.alt}
-                  className={`absolute origin-center touch-manipulation transition-transform duration-300 ease-out ${photo.className}`}
-                  style={{
-                    zIndex: isActive ? 50 : photo.zIndex,
-                    transform: `rotate(${photo.rotate}deg) scale(${isActive ? 1.24 : 1})`,
-                  }}
-                  aria-pressed={isActive}
-                  onClick={() =>
-                    setActiveMobile((current) =>
-                      current === index ? null : index,
-                    )
-                  }
-                >
-                  <PolaroidFrame
-                    src={photo.src}
-                    alt=""
-                    priority={index < 3}
-                    sizes="46vw"
-                    compact
-                  />
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={photo.src}
+                    type="button"
+                    aria-label={photo.alt}
+                    className={`absolute origin-center touch-manipulation transition-transform duration-300 ease-out ${photo.className}`}
+                    style={{
+                      zIndex: isActive ? 50 : photo.zIndex,
+                      transform: `rotate(${photo.rotate}deg) scale(${isActive ? 1.24 : 1})`,
+                    }}
+                    aria-pressed={isActive}
+                    onClick={() =>
+                      setActiveMobile((current) =>
+                        current === index ? null : index,
+                      )
+                    }
+                  >
+                    <PolaroidFrame
+                      src={photo.src}
+                      alt=""
+                      priority={index < 3}
+                      sizes="46vw"
+                      compact
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            <p className="relative z-20 mt-1 text-right font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
+              <span className="block translate-x-2.5 whitespace-nowrap">
+                <span className="italic">In</span> your local
+              </span>
+              <span className="mt-0.5 flex items-baseline justify-between">
+                <span className="mb-[0.16em] shrink-0 font-inter text-[11px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
+                  London &amp; Berlin
+                </span>
+                <span className="translate-x-2.5 italic">community</span>
+              </span>
+            </p>
           </div>
 
-          <p className="relative -mt-0.5 text-right font-playfair text-[clamp(2.05rem,8.6vw,2.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.055em] text-cream">
-            <span className="block translate-x-2.5 whitespace-nowrap">
-              <span className="italic">In</span> your local
-            </span>
-            <span className="mt-0.5 flex items-baseline justify-between">
-              <span className="mb-[0.16em] shrink-0 font-inter text-[10px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
-                London &amp; Berlin
-              </span>
-              <span className="translate-x-2.5 italic">community</span>
-            </span>
-          </p>
-
-          <div className="mt-5 flex flex-col items-center pb-2">
-            <p className="w-full max-w-[36ch] text-center font-inter text-[13px] leading-[1.32] text-ivory">
+          <div className="mt-2.5 flex shrink-0 flex-col items-center">
+            <p className="w-full max-w-[36ch] text-center font-inter text-[14px] leading-[1.28] text-ivory">
               Your neighborhood is full of places, people,
               <br />
               and initiatives to discover
             </p>
-            <p className="mt-2 text-center font-inter text-[10px] font-medium uppercase tracking-[0.07em] text-ivory">
+            <p className="mt-1.5 text-center font-inter text-[11px] font-medium uppercase tracking-[0.07em] text-ivory">
               NeighbrVille helps you find them
             </p>
 
-            <div className="mt-4 grid w-full grid-cols-2 gap-3">
+            <div className="mt-3.5 grid w-full grid-cols-2 gap-3.5">
               <Link
                 href="/?as=neighbr#join"
-                className="bg-cream px-3 py-4 text-center font-inter text-[14px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
+                className="bg-cream px-3.5 py-[1.125rem] text-center font-inter text-[16px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
               >
                 Join as a Neighbr
               </Link>
               <Link
                 href="/?as=partner#join"
-                className="border border-cream px-3 py-4 text-center font-inter text-[14px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
+                className="border border-cream px-3.5 py-[1.125rem] text-center font-inter text-[16px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
               >
                 Become a Partner
               </Link>
@@ -219,16 +225,15 @@ export function Hero() {
       </div>
 
       {/* ───────────── Desktop ───────────── */}
-      <div className="hidden min-h-0 flex-1 flex-col justify-center lg:flex">
-        <div className="page-shell page-x w-full">
-          <div className="relative mx-auto aspect-[1028/588] w-full max-w-[calc((100svh_-_6.5rem)*1.748)] [--pw:clamp(162px,19.1cqw,258px)] [container-type:inline-size]">
-            <p className="absolute left-[-3.2cqw] top-[19.1%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[14px] leading-[1.28] text-ivory xl:left-[-2.8cqw] xl:text-[15px]">
+      <div className="relative hidden min-h-0 w-full flex-1 lg:block">
+        <div className="absolute inset-0 px-[50px] [--pw:clamp(178px,14.4vw,244px)]">
+            <p className="absolute left-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[14px] leading-[1.28] text-ivory xl:text-[15px]">
               Your neighborhood is full of places,
               <br />
               people, and initiatives to discover
             </p>
 
-            <h1 className="absolute left-1/2 top-[19.7%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-playfair text-[clamp(2rem,4.82cqw,78px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
+            <h1 className="absolute left-1/2 top-[22%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-playfair text-[clamp(2.85rem,4.7vw,84px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
               <span className="block">
                 Become an <span className="italic">active</span>
               </span>
@@ -238,13 +243,13 @@ export function Hero() {
               <span className="block italic">community</span>
             </h1>
 
-            <p className="absolute right-[-3.2cqw] top-[19.1%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[14px] leading-[1.28] text-ivory xl:right-[-2.8cqw] xl:text-[15px]">
+            <p className="absolute right-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[14px] leading-[1.28] text-ivory xl:text-[15px]">
               NeighbrVille helps you find them,
               <br />
               connect, and build community
             </p>
 
-            <div className="absolute inset-x-0 top-[52.9%] z-10 flex -translate-y-1/2 items-center justify-center">
+            <div className="absolute inset-x-[50px] top-[56%] z-10 flex -translate-y-1/2 items-center justify-center">
               {polaroids.map((photo, index) => {
                 const isHovered = hovered === index;
 
@@ -275,7 +280,7 @@ export function Hero() {
                           src={photo.src}
                           alt={photo.alt}
                           fill
-                          sizes="(max-width: 1024px) 210px, 258px"
+                          sizes="(max-width: 1280px) 240px, 312px"
                           className={`object-cover transition-transform duration-300 ease-out ${
                             isHovered ? "scale-105" : "scale-100"
                           }`}
@@ -288,7 +293,7 @@ export function Hero() {
               })}
             </div>
 
-            <div className="absolute inset-x-0 top-[80.3%] z-20 text-center">
+            <div className="absolute inset-x-[50px] bottom-[50px] z-20 text-center">
               <p className="font-inter text-[12px] leading-[1.1] text-ivory lg:text-[13px]">
                 Launching Early 2027 · London &amp; Berlin
               </p>
@@ -296,7 +301,6 @@ export function Hero() {
                 Free to join. No commitment required
               </p>
             </div>
-          </div>
         </div>
       </div>
     </div>

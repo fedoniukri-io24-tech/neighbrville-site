@@ -57,12 +57,12 @@ const formCopy: Record<JoinRole, { title: ReactNode; footer: [string, string] }>
       title: (
         <>
           <span className="block whitespace-nowrap">
-            Become a <span className="italic">Launch</span>
+            Become a <span className="italic">Founding</span>
           </span>
-          <span className="block">Partner</span>
+          <span className="block whitespace-nowrap">Host or Partner</span>
         </>
       ),
-      footer: ["Host or contribute", "Cities need you"],
+      footer: ["Come as you are", "Beginners welcome"],
     },
   };
 
@@ -209,7 +209,7 @@ function JoinSectionInner() {
             the <span className="italic">beginning</span>
           </h2>
 
-          <p className="absolute left-[calc(14*var(--u))] top-[calc(87*var(--u))] whitespace-nowrap font-inter leading-[1.24] text-cream text-[length:max(10px,calc(7.1*var(--u)))] lg:left-[calc(31*var(--u))] lg:top-[calc(97*var(--u))] lg:text-[length:max(11px,calc(9.5*var(--u)))]">
+          <p className="absolute left-[calc(14*var(--u))] top-[calc(87*var(--u))] whitespace-nowrap font-inter leading-[1.24] text-white text-[length:max(10px,calc(7.1*var(--u)))] lg:left-[calc(31*var(--u))] lg:top-[calc(97*var(--u))] lg:text-[length:max(11px,calc(9.5*var(--u)))]">
             Join early to get first access and
             <br />
             help us build the experiences your

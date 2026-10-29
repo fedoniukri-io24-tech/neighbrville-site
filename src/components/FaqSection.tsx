@@ -1,16 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { faqs } from "@/lib/faq";
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    const node = document.getElementById("faq");
+    if (!node) return;
+
+    const update = () => {
+      const rect = node.getBoundingClientRect();
+      const visible =
+        Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+      document.documentElement.classList.toggle(
+        "faq-open",
+        visible > window.innerHeight * 0.55,
+      );
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      document.documentElement.classList.remove("faq-open");
+    };
+  }, []);
+
   return (
-    <section id="faq" className="snap-block bg-chocolate text-cream lg:min-h-dvh">
+    <section
+      id="faq"
+      className="scroll-mt-[var(--header-space)] bg-chocolate text-cream lg:min-h-dvh"
+    >
       <div className="page-shell page-x grid grid-cols-1 gap-8 py-12 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-12 lg:py-24">
-        <h2 className="font-playfair text-[clamp(2rem,9vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em] lg:sticky lg:top-10 lg:self-start lg:text-[clamp(2.1rem,4.5vw,64px)]">
+        <h2 className="font-playfair text-[clamp(2rem,9vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em] lg:sticky lg:top-[var(--header-space)] lg:self-start lg:text-[clamp(2.1rem,4.5vw,64px)]">
           <span className="block whitespace-nowrap">
             Frequently <span className="italic">asked</span>
           </span>

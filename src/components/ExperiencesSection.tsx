@@ -21,6 +21,7 @@ type ExperienceCard = {
 const headingBase = "text-cream/60";
 const headingAccent = "text-cream/85";
 const headingAccentEm = "not-italic text-cream/85";
+const headingItalic = "italic text-cream/85";
 
 const cards: ExperienceCard[] = [
   {
@@ -31,12 +32,12 @@ const cards: ExperienceCard[] = [
     alt: "Hands shaping clay on a pottery wheel",
     line: (
       <>
-        Try a new <em className={headingAccentEm}>experience</em>,
+        Try a new <em className={headingItalic}>experience</em>,
       </>
     ),
     mobileLine: (
       <>
-        Try a new <em className={headingAccentEm}>experience</em>,
+        Try a new <em className={headingItalic}>experience</em>,
       </>
     ),
     desktop: { left: 11.53, top: 4.6, rotate: -3.5 },
@@ -82,8 +83,8 @@ const cards: ExperienceCard[] = [
     tag: "Beginner-friendly",
     image: "/images/experiences/photo-walk.png",
     alt: "Friends walking through a park at sunset",
-    line: <em className={headingAccentEm}>differently</em>,
-    mobileLine: <em className={headingAccentEm}>differently</em>,
+    line: <em className={headingItalic}>differently</em>,
+    mobileLine: <em className={headingItalic}>differently</em>,
     desktop: { left: 12.14, top: 55.67, rotate: 4.75 },
     mobile: { left: 20.4, top: 22.5, rotate: 3 },
   },
@@ -372,7 +373,6 @@ function MobileStack({
 
 export function ExperiencesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const mobilePinRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
   const [activeMobile, setActiveMobile] = useState<number | null>(null);
@@ -404,6 +404,7 @@ export function ExperiencesSection() {
     return () => media.removeEventListener("change", sync);
   }, []);
 
+  // Same idea as desktop: sticky panel + scroll progress. No JS pin state.
   useEffect(() => {
     if (reduceMotion) {
       setProgress(1);
@@ -415,49 +416,16 @@ export function ExperiencesSection() {
 
     let frame = 0;
     let listening = false;
-    // Freeze viewport height during a touch so the URL bar doesn't
-    // resize the scroll range and shake the pinned block.
-    let stableVh = window.innerHeight;
-    let touching = false;
-    let pin: "before" | "fixed" | "after" = "before";
-
-    const layoutPin = () => {
-      const el = mobilePinRef.current;
-      if (!el) return 0;
-      const header = document.querySelector("header")?.offsetHeight ?? 0;
-      const height = Math.max(0, stableVh - header);
-      if (el.dataset.pinH !== String(height)) {
-        el.dataset.pinH = String(height);
-        el.style.height = `${height}px`;
-      }
-      return header;
-    };
-
-    const applyPin = (next: "before" | "fixed" | "after", header: number) => {
-      const el = mobilePinRef.current;
-      if (!el || pin === next) return;
-      pin = next;
-      el.style.position = next === "fixed" ? "fixed" : "absolute";
-      el.style.top = next === "after" ? "auto" : next === "fixed" ? `${header}px` : "0px";
-      el.style.bottom = next === "after" ? "0px" : "auto";
-    };
 
     const update = () => {
       const rect = section.getBoundingClientRect();
-      const vh = touching ? stableVh : window.innerHeight;
+      const vh = window.innerHeight;
+      const header = document.querySelector("header")?.offsetHeight ?? 0;
       const total = Math.max(section.offsetHeight - vh, 1);
-      const header = layoutPin();
-      const panelH = Number(mobilePinRef.current?.dataset.pinH || vh - header);
-      const panelBottom = header + panelH;
-
-      if (rect.top > header) applyPin("before", header);
-      else if (rect.bottom < panelBottom) applyPin("after", header);
-      else applyPin("fixed", header);
-
       const next =
         rect.top > header
           ? 0
-          : rect.bottom <= panelBottom
+          : rect.bottom <= vh
             ? 1
             : clamp(header - rect.top, 0, total) / total;
 
@@ -471,25 +439,11 @@ export function ExperiencesSection() {
       frame = requestAnimationFrame(update);
     };
 
-    const onTouchStart = () => {
-      touching = true;
-      stableVh = window.innerHeight;
-    };
-    const onTouchEnd = () => {
-      touching = false;
-      stableVh = window.innerHeight;
-      onScroll();
-    };
-
     const start = () => {
       if (listening) return;
       listening = true;
-      stableVh = window.innerHeight;
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onScroll, { passive: true });
-      window.addEventListener("touchstart", onTouchStart, { passive: true });
-      window.addEventListener("touchend", onTouchEnd, { passive: true });
-      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
       update();
     };
 
@@ -499,19 +453,20 @@ export function ExperiencesSection() {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("touchcancel", onTouchEnd);
     };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) start();
-        else stop();
+        else {
+          update();
+          stop();
+        }
       },
       { rootMargin: "40% 0px" },
     );
     observer.observe(section);
+    update();
 
     return () => {
       observer.disconnect();
@@ -526,16 +481,16 @@ export function ExperiencesSection() {
       id="experiences"
       ref={sectionRef}
       className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:overflow-x-clip ${
-        reduceMotion ? "snap-block" : "h-[580vh] lg:h-[620vh]"
+        reduceMotion ? "snap-block" : "h-[280vh] lg:h-[400vh]"
       }`}
     >
       {!reduceMotion ? (
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {Array.from({ length: cards.length + 1 }, (_, index) => (
+          {Array.from({ length: cards.length }, (_, index) => (
             <div
               key={index}
               className="snap-step"
-              style={{ height: `${100 / (cards.length + 1)}%` }}
+              style={{ height: `${100 / cards.length}%` }}
             />
           ))}
         </div>
@@ -547,19 +502,20 @@ export function ExperiencesSection() {
       </span>
 
       <div
-        ref={mobilePinRef}
-        className={`inset-x-0 z-20 flex h-[calc(100svh-var(--header-space))] flex-col overflow-hidden bg-chocolate lg:hidden ${
-          reduceMotion ? "relative" : "absolute top-0"
-        }`}
+        className={
+          reduceMotion
+            ? "relative z-20 bg-chocolate lg:hidden"
+            : "sticky top-[var(--header-space)] z-20 bg-chocolate lg:hidden"
+        }
       >
-        <div className="page-shell page-x mx-auto flex h-full min-h-0 w-full max-w-[520px] flex-col [container-type:inline-size]">
-          <div className="flex min-h-0 flex-1 flex-col items-stretch pt-[4svh] text-left">
-            <p className="font-inter text-[2.56cqw] uppercase leading-none text-ivory">
+        <div className="page-shell page-x mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
+          <div className="flex flex-col items-stretch overflow-visible pb-2 pt-[3svh] text-left">
+            <p className="shrink-0 font-inter text-[2.56cqw] uppercase leading-none text-ivory">
               Find something that feels like you
             </p>
 
             <h2
-              className={`relative z-20 mt-[2.2svh] w-full shrink-0 text-left font-playfair text-[8.6cqw] font-normal uppercase leading-[1.03] tracking-[-0.045em] text-cream`}
+              className={`relative z-20 mt-[1.6svh] w-full shrink-0 text-left font-playfair text-[7.8cqw] font-normal uppercase leading-[1.02] tracking-[-0.045em] text-cream`}
             >
               {cards.map((card, index) => {
                 const isActive = mobileActive === index;
@@ -585,7 +541,7 @@ export function ExperiencesSection() {
               })}
             </h2>
 
-            <div className="mt-[1.5svh] min-h-0 w-full flex-1">
+            <div className="relative mt-[1.5svh] h-[clamp(400px,46svh,450px)] w-full shrink-0">
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}
@@ -597,8 +553,8 @@ export function ExperiencesSection() {
               />
             </div>
 
-            <div className="mt-[3.5cqw] flex flex-col items-center text-center">
-              <p className="max-w-[88cqw] font-inter text-[3.1cqw] leading-[1.2] text-ivory">
+            <div className="relative z-10 mt-10 flex shrink-0 flex-col items-center text-center">
+              <p className="max-w-[88cqw] font-inter text-[2.9cqw] leading-[1.25] text-ivory">
                 Your neighborhood is full of people doing interesting things,
                 places waiting to be discovered and initiatives bringing others
                 together
@@ -606,13 +562,13 @@ export function ExperiencesSection() {
 
               <Link
                 href="/?as=neighbr#join"
-                className={`mt-[4cqw] text-center text-[8.1cqw] underline-offset-[1.9cqw] ${ctaClass}`}
+                className={`mt-[3cqw] text-center text-[7.4cqw] underline-offset-[1.9cqw] ${ctaClass}`}
               >
                 Join the waitlist
               </Link>
             </div>
 
-            <div className="mt-[4cqw] -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
+            <div className="mt-6 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
               <ExperienceMarquee />
             </div>
           </div>
@@ -622,22 +578,17 @@ export function ExperiencesSection() {
       <div
         className={
           reduceMotion
-            ? "hidden min-h-0 flex-col overflow-x-clip lg:flex"
-            : "sticky top-0 hidden min-h-dvh flex-col overflow-x-clip overflow-visible lg:flex"
+            ? "relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] overflow-x-clip lg:grid"
+            : "sticky top-0 relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] overflow-x-clip lg:grid"
         }
       >
-        <div className="page-shell flex min-h-0 w-full flex-1 flex-col overflow-visible [container-type:inline-size]">
-          <div
-            className="relative"
-            style={{ height: "max(56.4cqw, 640px)" }}
-          >
-            <p className="absolute left-[2.67cqw] top-[5.48cqw] font-inter text-[max(9px,0.93cqw)] uppercase leading-none text-ivory">
-              Find something that feels like you
-            </p>
+        <p className="absolute left-[50px] top-[88px] z-20 font-inter text-[13px] font-normal uppercase leading-none text-ivory">
+          Find something that feels like you
+        </p>
 
-            <h2
-              className={`absolute left-[2.67cqw] top-[8.6cqw] z-20 font-playfair text-[4.24cqw] font-normal uppercase leading-[0.886] tracking-[-0.074em] ${headingBase}`}
-            >
+        <h2
+          className={`absolute left-[50px] top-[116px] z-20 text-left font-playfair text-[clamp(2rem,3.4vw,52px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] ${headingBase}`}
+        >
               {cards.map((card, index) => {
                 const isActive = activeIndex === index;
                 const isRevealed = index <= scrollIndex;
@@ -670,32 +621,44 @@ export function ExperiencesSection() {
                   </button>
                 );
               })}
-            </h2>
+        </h2>
 
-            <div className="absolute bottom-[4cqw] left-[2.67cqw]">
-              <p className="font-inter text-[max(9px,0.935cqw)] leading-[1.17] text-ivory">
-                Language is part of the experience
-                <br />
-                Practice while doing something you enjoy
-              </p>
-              <Link
-                href="/?as=neighbr#join"
-                className={`mt-[1cqw] inline-block text-[2.12cqw] underline-offset-[0.45cqw] ${ctaClass}`}
-              >
-                Join the waitlist
-              </Link>
-            </div>
-
+        <div className="page-shell relative z-0 w-full self-start overflow-visible [container-type:inline-size]">
+          <div
+            className="relative"
+            style={{ height: "max(56.4cqw, 640px)" }}
+          >
             <DesktopStack
               progress={motionProgress}
               activeIndex={activeIndex}
               canSwitchCards={canSwitchCards}
               onHover={setHovered}
             />
+            <div className="absolute bottom-4 left-[50px] z-20">
+              <p className="font-inter text-[15px] font-normal leading-[1.2] text-ivory">
+                Language is part of the experience
+                <br />
+                Practice while doing something you enjoy
+              </p>
+              <Link
+                href="/?as=neighbr#join"
+                className={`mt-3 inline-block text-[28px] underline-offset-[6px] ${ctaClass}`}
+                onClick={() => {
+                  document.documentElement.classList.add("join-open");
+                }}
+              >
+                Join the waitlist
+              </Link>
+            </div>
           </div>
         </div>
 
-        <ExperienceMarquee />
+        <div aria-hidden className="min-h-0" />
+
+        <div className="relative z-20 min-w-0">
+          <ExperienceMarquee />
+        </div>
+        <div aria-hidden className="min-h-0" />
       </div>
     </section>
   );

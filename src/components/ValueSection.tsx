@@ -11,12 +11,12 @@ export function ValueSection() {
           src="/images/sections/park-community.png"
           alt="People relaxing together in a park"
           fill
-          className="object-cover object-[center_40%]"
+          className="object-cover object-[center_40%] brightness-[1.12]"
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </div>
 
-      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-screen lg:px-10 lg:py-16 xl:px-14 xl:py-20">
+      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-screen lg:px-[50px] lg:py-[50px]">
         <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
           <span className="block lg:hidden">
             A <span className="italic">city</span> can feel like a

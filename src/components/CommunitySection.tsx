@@ -90,7 +90,7 @@ function InteractivePhoto({
 export function CommunitySection() {
   return (
     <section id="village" className="snap-block overflow-x-clip bg-chocolate text-cream">
-      <div className="page-shell page-x hidden lg:block">
+      <div className="page-shell page-x hidden lg:pt-20 lg:block">
         <div className="relative aspect-[1440/860] w-full">
           {photos.map((photo) => (
             <InteractivePhoto
@@ -102,17 +102,17 @@ export function CommunitySection() {
           ))}
 
           <div className="pointer-events-none absolute inset-x-[10%] top-[32.4%] z-10 text-center">
-            <p className="font-inter text-[11px] font-medium uppercase tracking-[0.24em] text-ivory xl:text-[12px]">
+            <p className="font-inter text-[11px] font-normal uppercase tracking-[0.24em] text-ivory xl:text-[12px]">
               Built by the neighborhood
             </p>
 
             <h2 className="mx-auto mt-6 max-w-[1000px] font-playfair text-[clamp(2.1rem,4.5vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
               <span className="block whitespace-nowrap">
-                Everything your <span className="italic">community</span>
+                Everything your <span className="italic font-normal">community</span>
               </span>
               <span className="block whitespace-nowrap">
-                <span className="italic">has to</span> offer in{" "}
-                <span className="italic text-cream/40">one place</span>
+                <span className="italic font-normal">has to</span> offer in{" "}
+                <span className="italic font-normal text-cream/40">one place</span>
               </span>
             </h2>
 
@@ -120,7 +120,7 @@ export function CommunitySection() {
               You offer events, spaces, programs, or something else entirely?
             </p>
 
-            <p className="mx-auto mt-1 max-w-[470px] font-inter text-[13px] leading-[1.35] text-ivory xl:text-[14px]">
+            <p className="mx-auto mt-1 max-w-[470px] font-inter text-[13px] font-normal leading-[1.35] text-ivory xl:text-[14px]">
               NeighbrVille helps more people discover it! Whether you host events
               or contribute to your local life in broader ways, you belong here
             </p>
@@ -128,16 +128,20 @@ export function CommunitySection() {
 
           <Link
             href="/?as=partner#join"
-            className="absolute bottom-[9.4%] left-1/2 z-10 -translate-x-1/2 font-playfair text-[clamp(1.35rem,1.7vw,1.85rem)] italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
+            onClick={() => {
+              document.documentElement.classList.add("join-open");
+            }}
+            className="absolute bottom-[9.4%] left-1/2 z-30 -translate-x-1/2 font-playfair text-[clamp(1.35rem,1.7vw,1.85rem)] font-normal italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
           >
             Become a partner
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-clip pb-8 pt-8 lg:hidden">
-        {/* Top photo cluster */}
-        <div className="relative mx-auto aspect-[440/220] w-full max-w-[440px]">
+      <div className="overflow-x-clip pb-10 pt-6 lg:hidden">
+        {/* Top photo cluster — reserved height so absolute photos can't
+            collide with the copy below even when they scale up. */}
+        <div className="relative z-0 mx-auto aspect-[440/240] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/circle.png",
@@ -152,12 +156,12 @@ export function CommunitySection() {
             {
               src: "/images/community/library.png",
               alt: "Sunlit neighborhood bookshop",
-              className: "left-0 top-[40%] w-[21.8%] aspect-[96/93]",
+              className: "left-0 top-[36%] w-[21.8%] aspect-[96/93]",
             },
             {
               src: "/images/community/watercolor.png",
               alt: "Hands painting with watercolors",
-              className: "left-[53.4%] top-[58%] w-[27.5%] aspect-[121/63]",
+              className: "left-[53.4%] top-[52%] w-[27.5%] aspect-[121/63]",
             },
           ].map((photo) => (
             <InteractivePhoto
@@ -171,55 +175,56 @@ export function CommunitySection() {
           ))}
         </div>
 
-        <div className="page-x mx-auto -mt-2 max-w-[420px] pt-2 text-center">
-          <p className="font-inter text-[11px] font-medium uppercase tracking-[0.18em] text-ivory">
+        <div className="page-x relative z-10 mx-auto mt-8 max-w-[420px] text-center">
+          <p className="font-inter text-[11px] font-normal uppercase tracking-[0.18em] text-ivory">
             Built by the neighborhood
           </p>
           <h2 className="mt-5 font-playfair text-[clamp(1.7rem,7.6vw,2.35rem)] font-normal uppercase leading-[0.95] tracking-[-0.04em]">
             <span className="block">Everything your</span>
             <span className="block">
-              community <span className="italic">has to</span>
+              community <span className="italic font-normal">has to</span>
             </span>
             <span className="block">
-              offer in <span className="italic text-cream/40">one place</span>
+              offer in <span className="italic font-normal text-cream/40">one place</span>
             </span>
           </h2>
           <p className="mx-auto mt-6 whitespace-nowrap font-inter text-[clamp(9px,2.8vw,11px)] font-normal uppercase leading-none tracking-[0.02em] text-ivory">
             Have events, spaces, or programs to offer?
           </p>
-          <p className="mx-auto mt-2 max-w-[360px] font-inter text-[13px] leading-[1.35] text-ivory">
+          <p className="mx-auto mt-2 max-w-[360px] font-inter text-[13px] font-normal leading-[1.35] text-ivory">
             NeighbrVille helps more people discover it! Whether you host events
             or contribute to your local life in broader ways, you belong here
           </p>
         </div>
 
-        {/* Bottom photo cluster */}
-        <div className="relative mx-auto mt-3 aspect-[440/280] w-full max-w-[440px]">
+        {/* Bottom photo cluster — starts below the copy, with its own
+            reserved frame so these photos never climb into the text. */}
+        <div className="relative z-0 mx-auto mt-12 aspect-[440/300] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/performance.png",
               alt: "A neighbor performing on a rug",
-              className: "left-[4.5%] top-[2.5%] w-[17.3%] aspect-[4/5]",
+              className: "left-[4.5%] top-[4%] w-[17.3%] aspect-[4/5]",
             },
             {
               src: "/images/community/pottery.png",
               alt: "Hands shaping a clay pot",
-              className: "left-[36.6%] top-[28.9%] w-[18%] aspect-square",
+              className: "left-[36.6%] top-[30%] w-[18%] aspect-square",
             },
             {
               src: "/images/community/repair.png",
               alt: "Neighbors repairing things together",
-              className: "left-[67.5%] top-[10.7%] w-[33.6%] aspect-[37/20]",
+              className: "left-[67.5%] top-[12%] w-[33.6%] aspect-[37/20]",
             },
             {
               src: "/images/community/makers.png",
               alt: "A shared makers table under pendant lamps",
-              className: "left-0 top-[66.8%] w-[38.4%] aspect-[2/1]",
+              className: "left-0 top-[68%] w-[38.4%] aspect-[2/1]",
             },
             {
               src: "/images/community/books.png",
               alt: "Stacks of books on a wooden table",
-              className: "left-[70.9%] top-[58.6%] w-[19.5%] aspect-square",
+              className: "left-[70.9%] top-[60%] w-[19.5%] aspect-square",
             },
           ].map((photo) => (
             <InteractivePhoto
@@ -233,10 +238,13 @@ export function CommunitySection() {
           ))}
         </div>
 
-        <div className="page-x mt-10 text-center">
+        <div className="page-x relative z-10 mt-8 text-center">
           <Link
             href="/?as=partner#join"
-            className="font-playfair text-[clamp(1.7rem,7vw,2.1rem)] italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px]"
+            onClick={() => {
+              document.documentElement.classList.add("join-open");
+            }}
+            className="font-playfair text-[clamp(1.7rem,7vw,2.1rem)] font-normal italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px]"
           >
             Become a partner
           </Link>
