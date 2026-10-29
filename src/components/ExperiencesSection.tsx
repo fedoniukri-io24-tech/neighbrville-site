@@ -46,7 +46,7 @@ const cards: ExperienceCard[] = [
   {
     title: "Sunday Repair Café",
     meta: "Repair & Sustainability · London",
-    tag: "Free",
+    tag: "Volunteer-led",
     image: "/images/experiences/repair-cafe.png",
     alt: "Neighbors repairing items together",
     line: (
