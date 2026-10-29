@@ -187,7 +187,7 @@ function headlineLineClass(
 function ExperienceMarquee() {
   return (
     <div
-      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate py-2 lg:py-2.5"
+      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate py-2 lg:relative lg:z-50 lg:py-2.5"
       aria-hidden
     >
       <div className="experience-marquee-track flex w-max animate-marquee items-center whitespace-nowrap will-change-transform">
@@ -252,8 +252,14 @@ function DesktopStack({
               height: "38.62%",
               zIndex: motion.zIndex,
               opacity: motion.opacity,
-              pointerEvents: motion.pointerEvents,
+              pointerEvents:
+                canSwitchCards && motion.pointerEvents === "auto"
+                  ? "auto"
+                  : "none",
               transform: motion.transform,
+            }}
+            onClick={() => {
+              if (canSwitchCards) onHover(index);
             }}
             onMouseEnter={() => {
               if (canSwitchCards) onHover(index);
@@ -301,10 +307,12 @@ function DesktopStack({
 function MobileStack({
   progress,
   activeIndex,
+  canSwitchCards,
   onActivate,
 }: {
   progress: number;
   activeIndex: number;
+  canSwitchCards: boolean;
   onActivate: (index: number) => void;
 }) {
   return (
@@ -333,10 +341,14 @@ function MobileStack({
               height: "66%",
               zIndex: motion.zIndex,
               opacity: motion.opacity,
-              pointerEvents: motion.pointerEvents,
+              pointerEvents:
+                motion.pointerEvents === "auto" ? "auto" : "none",
               transform: motion.transform,
             }}
-            onClick={() => onActivate(index)}
+            onClick={() => {
+              if (!canSwitchCards || motion.pointerEvents !== "auto") return;
+              onActivate(index);
+            }}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
@@ -381,8 +393,8 @@ export function ExperiencesSection() {
   const scrollIndex = reduceMotion
     ? cards.length - 1
     : Math.round(progress * (cards.length - 1));
-  const canSwitchCards =
-    reduceMotion || scrollIndex >= cards.length - 1;
+  const storyComplete = progress >= 0.92 || scrollIndex >= cards.length - 1;
+  const canSwitchCards = reduceMotion || storyComplete;
   const activeIndex = canSwitchCards ? (hovered ?? scrollIndex) : scrollIndex;
   const mobileActive = canSwitchCards
     ? (activeMobile ?? scrollIndex)
@@ -415,19 +427,29 @@ export function ExperiencesSection() {
     if (!section) return;
 
     let frame = 0;
-    let listening = false;
+
+    const readPinTop = () => {
+      if (window.matchMedia("(min-width: 1024px)").matches) return 0;
+      const header = document.querySelector("header")?.offsetHeight;
+      if (header != null && header > 0) return header;
+      const space = getComputedStyle(document.documentElement).getPropertyValue(
+        "--header-space",
+      );
+      const parsed = Number.parseFloat(space);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
 
     const update = () => {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
-      const header = document.querySelector("header")?.offsetHeight ?? 0;
+      const pinTop = readPinTop();
       const total = Math.max(section.offsetHeight - vh, 1);
       const next =
-        rect.top > header
+        rect.top > pinTop
           ? 0
-          : rect.bottom <= vh
+          : rect.bottom <= vh + 1
             ? 1
-            : clamp(header - rect.top, 0, total) / total;
+            : clamp(pinTop - rect.top, 0, total) / total;
 
       setProgress((current) =>
         Math.abs(current - next) < 0.002 ? current : next,
@@ -439,38 +461,14 @@ export function ExperiencesSection() {
       frame = requestAnimationFrame(update);
     };
 
-    const start = () => {
-      if (listening) return;
-      listening = true;
-      window.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", onScroll, { passive: true });
-      update();
-    };
-
-    const stop = () => {
-      if (!listening) return;
-      listening = false;
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) start();
-        else {
-          update();
-          stop();
-        }
-      },
-      { rootMargin: "40% 0px" },
-    );
-    observer.observe(section);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     update();
 
     return () => {
-      observer.disconnect();
-      stop();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, [reduceMotion]);
 
@@ -480,7 +478,7 @@ export function ExperiencesSection() {
     <section
       id="experiences"
       ref={sectionRef}
-      className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:overflow-x-clip ${
+      className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:z-20 lg:overflow-x-clip ${
         reduceMotion ? "snap-block" : "h-[280vh] lg:h-[400vh]"
       }`}
     >
@@ -545,6 +543,7 @@ export function ExperiencesSection() {
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}
+                canSwitchCards={canSwitchCards}
                 onActivate={(index) =>
                   setActiveMobile((current) =>
                     current === index ? null : index,
@@ -615,6 +614,12 @@ export function ExperiencesSection() {
                     onBlur={() => {
                       if (canSwitchCards) setHovered(null);
                     }}
+                    onClick={() => {
+                      if (!canSwitchCards) return;
+                      setHovered((current) =>
+                        current === index ? null : index,
+                      );
+                    }}
                     aria-pressed={isActive}
                   >
                     {card.line}
@@ -655,7 +660,7 @@ export function ExperiencesSection() {
 
         <div aria-hidden className="min-h-0" />
 
-        <div className="relative z-20 min-w-0">
+        <div className="relative z-30 min-w-0 isolation-isolate">
           <ExperienceMarquee />
         </div>
         <div aria-hidden className="min-h-0" />

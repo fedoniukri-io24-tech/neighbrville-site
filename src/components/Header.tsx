@@ -88,13 +88,13 @@ export function Header() {
           <div className="relative z-10 hidden min-w-0 shrink items-center gap-3 md:flex">
             <Link
               href="/?as=neighbr#join"
-              className="bg-cream px-5 py-3 font-inter text-[11px] font-medium leading-none whitespace-nowrap text-chocolate transition-opacity hover:opacity-90 lg:py-2"
+              className="bg-cream px-5 py-2.5 font-inter text-[13px] font-medium leading-none whitespace-nowrap text-chocolate transition-opacity hover:opacity-90 lg:px-6 lg:text-[14px]"
             >
               Join as a Neighbr
             </Link>
             <Link
               href="/?as=partner#join"
-              className="border border-cream px-5 py-3 font-inter text-[11px] font-normal leading-none whitespace-nowrap text-cream transition-colors hover:bg-cream/10 lg:py-2"
+              className="border border-cream px-5 py-2.5 font-inter text-[13px] font-normal leading-none whitespace-nowrap text-cream transition-colors hover:bg-cream/10 lg:px-6 lg:text-[14px]"
             >
               Become a Partner
             </Link>

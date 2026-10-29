@@ -9,10 +9,11 @@ export function ValueSection() {
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image
           src="/images/sections/park-community.png"
-          alt="People relaxing together in a park"
+          alt="Neighbors gathered in a circle in the park"
           fill
-          className="object-cover object-[center_40%] brightness-[1.12]"
+          className="object-cover object-center brightness-[1.12]"
           sizes="(max-width: 1024px) 100vw, 50vw"
+          priority
         />
       </div>
 

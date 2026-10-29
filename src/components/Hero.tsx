@@ -58,6 +58,7 @@ const mobilePolaroids = [
     className: "left-[5%] top-[8.6%] w-[30.8%]",
     rotate: -12,
     zIndex: 1,
+    scaleOrigin: "center top",
   },
   {
     src: "/images/hero/polaroid-05.png",
@@ -65,6 +66,7 @@ const mobilePolaroids = [
     className: "left-[33.5%] top-[1.2%] w-[31%]",
     rotate: 2,
     zIndex: 2,
+    scaleOrigin: "center top",
   },
   {
     src: "/images/hero/polaroid-01.png",
@@ -72,6 +74,7 @@ const mobilePolaroids = [
     className: "left-[62.5%] top-[10%] w-[30.8%]",
     rotate: 12,
     zIndex: 3,
+    scaleOrigin: "center top",
   },
   {
     src: "/images/hero/polaroid-02.png",
@@ -79,6 +82,7 @@ const mobilePolaroids = [
     className: "left-[18%] top-[41%] w-[35%]",
     rotate: -9,
     zIndex: 10,
+    scaleOrigin: "center bottom",
   },
   {
     src: "/images/hero/polaroid-04.png",
@@ -86,6 +90,7 @@ const mobilePolaroids = [
     className: "left-[47.5%] top-[42%] w-[35%]",
     rotate: 7,
     zIndex: 11,
+    scaleOrigin: "center bottom",
   },
 ];
 
@@ -137,8 +142,8 @@ export function Hero() {
         <div className="page-shell flex min-h-0 flex-1 flex-col justify-between overflow-visible">
           {/* Headline + photos share one flex slot so justify-between
               can't stretch the gap between them. */}
-          <div className="shrink-0">
-            <h1 className="relative text-left font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
+          <div className="relative isolate shrink-0">
+            <h1 className="relative z-20 bg-chocolate text-left font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
               <span className="block whitespace-nowrap">
                 Become an <span className="italic">active</span>
               </span>
@@ -159,9 +164,10 @@ export function Hero() {
                     key={photo.src}
                     type="button"
                     aria-label={photo.alt}
-                    className={`absolute origin-center touch-manipulation transition-transform duration-300 ease-out ${photo.className}`}
+                    className={`absolute touch-manipulation transition-transform duration-300 ease-out ${photo.className}`}
                     style={{
                       zIndex: isActive ? 50 : photo.zIndex,
+                      transformOrigin: photo.scaleOrigin,
                       transform: `rotate(${photo.rotate}deg) scale(${isActive ? 1.24 : 1})`,
                     }}
                     aria-pressed={isActive}
@@ -171,19 +177,19 @@ export function Hero() {
                       )
                     }
                   >
-                    <PolaroidFrame
-                      src={photo.src}
-                      alt=""
-                      priority={index < 3}
-                      sizes="46vw"
-                      compact
-                    />
-                  </button>
-                );
-              })}
+                      <PolaroidFrame
+                        src={photo.src}
+                        alt=""
+                        priority={index < 3}
+                        sizes="46vw"
+                        compact
+                      />
+                    </button>
+                  );
+                })}
             </div>
 
-            <p className="relative z-20 mt-1 text-right font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
+            <p className="relative z-20 mt-1.5 text-right font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
               <span className="block translate-x-2.5 whitespace-nowrap">
                 <span className="italic">In</span> your local
               </span>

@@ -89,9 +89,12 @@ function InteractivePhoto({
 
 export function CommunitySection() {
   return (
-    <section id="village" className="snap-block overflow-x-clip bg-chocolate text-cream">
+    <section
+      id="village"
+      className="relative snap-block overflow-x-clip bg-chocolate text-cream lg:z-10"
+    >
       <div className="page-shell page-x hidden lg:pt-20 lg:block">
-        <div className="relative aspect-[1440/860] w-full">
+        <div className="relative aspect-[1440/860] w-full overflow-hidden">
           {photos.map((photo) => (
             <InteractivePhoto
               key={photo.src}

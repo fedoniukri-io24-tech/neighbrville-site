@@ -19,11 +19,13 @@ const socials = [
 export function Footer() {
   return (
     <footer className="snap-block overflow-x-clip bg-cream text-chocolate">
-      <div className="page-shell page-x relative z-10 flex flex-col gap-10 overflow-x-clip py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-12 lg:py-16">
-        <div className="order-2 grid grid-cols-1 gap-y-4 lg:order-1 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-10">
-          <div className="hidden lg:block">
-            <p className="font-inter text-[11px] uppercase tracking-[0.14em]">Menu</p>
-            <ul className="mt-5 space-y-3">
+      <div className="page-shell page-x relative z-10 flex flex-col gap-10 overflow-x-clip py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-stretch lg:gap-12 lg:py-16">
+        <div className="order-2 grid grid-cols-1 gap-y-4 lg:order-1 lg:grid-cols-3 lg:items-stretch lg:gap-x-8 lg:gap-y-10">
+          <div className="hidden lg:flex lg:h-full lg:flex-col">
+            <p className="font-inter text-[11px] uppercase leading-none tracking-[0.14em]">
+              Menu
+            </p>
+            <ul className="mt-5 flex flex-1 flex-col justify-between space-y-3 lg:space-y-0">
               {menu.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -37,11 +39,11 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
-            <p className="hidden font-inter text-[11px] uppercase tracking-[0.14em] lg:block">
+          <div className="lg:flex lg:h-full lg:flex-col">
+            <p className="hidden font-inter text-[11px] uppercase leading-none tracking-[0.14em] lg:block">
               Socials
             </p>
-            <ul className="space-y-3 lg:mt-5">
+            <ul className="space-y-3 lg:mt-5 lg:flex lg:flex-1 lg:flex-col lg:justify-between lg:space-y-0">
               {socials.map((item) => (
                 <li key={item.label}>
                   <a
@@ -57,11 +59,11 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
-            <p className="hidden font-inter text-[11px] uppercase tracking-[0.14em] lg:block">
+          <div className="lg:flex lg:h-full lg:flex-col">
+            <p className="hidden font-inter text-[11px] uppercase leading-none tracking-[0.14em] lg:block">
               Contact
             </p>
-            <ul className="mt-6 space-y-3 font-inter text-[13px] uppercase leading-none tracking-[0.04em] lg:mt-5 lg:text-[15px] lg:normal-case lg:tracking-normal">
+            <ul className="mt-6 space-y-3 font-inter text-[13px] uppercase leading-none tracking-[0.04em] lg:mt-5 lg:flex lg:flex-1 lg:flex-col lg:justify-between lg:space-y-0 lg:text-[15px] lg:normal-case lg:tracking-normal">
               <li>
                 <a href="tel:+11234567890" className="transition-opacity hover:opacity-70">
                   +1 123 456 78 90
@@ -84,13 +86,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="order-1 flex w-full flex-col items-start lg:order-2 lg:items-stretch">
-          <div className="w-full max-w-[460px] lg:max-w-none">
+        <div className="order-1 flex w-full flex-col items-start lg:order-2 lg:h-full lg:items-stretch">
+          <div className="flex w-full max-w-[460px] flex-col lg:h-full lg:max-w-none lg:justify-between">
             <p className="font-playfair text-[clamp(2.35rem,9.5vw,3rem)] font-normal uppercase italic leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2rem,3.4vw,52px)] lg:leading-[0.9]">
               <span className="block lg:text-left">Find your people</span>
               <span className="block lg:text-right">feel at home</span>
             </p>
-            <div className="mt-8 hidden w-full items-center justify-between gap-6 font-inter text-[13px] lg:mt-10 lg:flex">
+            <div className="mt-8 hidden w-full items-center justify-between gap-6 font-inter text-[13px] leading-none lg:mt-0 lg:flex">
               <p>©2026 All rights reserved</p>
               <Link href="#privacy" className="transition-opacity hover:opacity-70">
                 Privacy Policy
