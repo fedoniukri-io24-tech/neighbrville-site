@@ -334,11 +334,10 @@ function MobileStack({
             tabIndex={motion.pointerEvents === "auto" ? 0 : -1}
             aria-pressed={isActive}
             aria-label={card.alt}
-            className={`absolute w-[78%] origin-top-left touch-manipulation bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
+            className={`absolute w-[74%] origin-top-left touch-manipulation overflow-visible bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
             style={{
               left: motion.left,
               top: motion.top,
-              height: "74%",
               zIndex: motion.zIndex,
               opacity: motion.opacity,
               pointerEvents:
@@ -356,7 +355,7 @@ function MobileStack({
               }
             }}
           >
-            <div className="flex h-full flex-col px-[8.5cqw] pb-[6.5cqw] pt-[7.5cqw]">
+            <div className="flex flex-col px-[8.5cqw] pb-[6.5cqw] pt-[7.5cqw]">
               <div className="relative h-[60cqw] w-full shrink-0 overflow-hidden">
                 <Image
                   src={card.image}
@@ -372,7 +371,7 @@ function MobileStack({
               <p className="mt-[1.6cqw] font-inter text-[4.35cqw] leading-[1.22]">
                 {card.meta}
               </p>
-              <span className="mt-auto self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
+              <span className="mt-[5cqw] self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
                 {card.tag}
               </span>
             </div>
@@ -507,7 +506,7 @@ export function ExperiencesSection() {
         }
       >
         <div className="page-shell page-x mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
-          <div className="flex flex-col items-stretch overflow-visible pb-10 pt-[3svh] text-left">
+          <div className="flex flex-col items-stretch overflow-visible pb-2 pt-[3svh] text-left">
             <p className="shrink-0 font-inter text-[2.56cqw] uppercase leading-none text-ivory">
               Find something that feels like you
             </p>
@@ -539,7 +538,7 @@ export function ExperiencesSection() {
               })}
             </h2>
 
-            <div className="relative mt-[1.5svh] h-[clamp(440px,52svh,510px)] w-full shrink-0">
+            <div className="relative mt-[1.5svh] h-[calc(118cqw+3.5rem)] w-full shrink-0 overflow-visible">
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}
@@ -552,7 +551,7 @@ export function ExperiencesSection() {
               />
             </div>
 
-            <div className="relative z-10 mt-10 flex shrink-0 flex-col items-center text-center">
+            <div className="relative z-10 mt-2 flex shrink-0 flex-col items-center text-center">
               <p className="max-w-[88cqw] font-inter text-[2.9cqw] leading-[1.25] text-ivory">
                 Your neighborhood is full of people doing interesting things,
                 places waiting to be discovered and initiatives bringing others
@@ -567,7 +566,7 @@ export function ExperiencesSection() {
               </Link>
             </div>
 
-            <div className="mt-10 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
+            <div className="mt-6 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
               <ExperienceMarquee />
             </div>
           </div>
@@ -577,8 +576,8 @@ export function ExperiencesSection() {
       <div
         className={
           reduceMotion
-            ? "relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] overflow-x-clip lg:grid"
-            : "sticky top-0 relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] overflow-x-clip lg:grid"
+            ? "relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
+            : "sticky top-0 relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
         }
       >
         <p className="absolute left-[50px] top-[88px] z-20 font-inter text-[13px] font-normal uppercase leading-none text-ivory">
@@ -660,10 +659,9 @@ export function ExperiencesSection() {
 
         <div aria-hidden className="min-h-0" />
 
-        <div className="relative z-30 min-w-0 isolation-isolate">
+        <div className="relative z-30 min-w-0 self-end isolation-isolate">
           <ExperienceMarquee />
         </div>
-        <div aria-hidden className="min-h-0" />
       </div>
     </section>
   );
