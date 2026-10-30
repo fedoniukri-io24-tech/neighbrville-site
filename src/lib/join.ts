@@ -21,6 +21,12 @@ export const LANGUAGES = [
 
 export const CATEGORIES = INTERESTS;
 
+export function isValidEmail(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
 export function shareJoinInvite(role: JoinRole) {
   const url = window.location.href;
   const text =
@@ -37,28 +43,33 @@ export function shareJoinInvite(role: JoinRole) {
   }
 }
 
-/** Smooth-scroll a join target into view and optionally focus a field. */
+/** Scroll a join target into view; prefer `nearest` while typing in forms. */
 export function scrollToJoinPanel(
   node: HTMLElement | null,
-  options?: { focus?: boolean },
+  options?: {
+    focus?: boolean;
+    align?: "panel-top" | "nearest";
+    behavior?: ScrollBehavior;
+  },
 ) {
   if (!node) return;
 
-  // Wait a frame so layout after expand is settled, then scroll to the
-  // panel's top edge (no extra lift — old --join-panel-lift offset drifted).
+  const align = options?.align ?? "panel-top";
+  const behavior = options?.behavior ?? "smooth";
+
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
+    if (align === "nearest") {
+      node.scrollIntoView({ block: "nearest", behavior });
+    } else {
       const top = node.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      window.scrollTo({ top: Math.max(0, top), behavior });
+    }
 
-      if (!options?.focus) return;
+    if (!options?.focus) return;
 
-      const focusable = node.querySelector<HTMLElement>(
-        'input:not([type="hidden"]), textarea, select, button[type="submit"]',
-      );
-      window.setTimeout(() => {
-        focusable?.focus({ preventScroll: true });
-      }, 450);
-    });
+    const focusable = node.querySelector<HTMLElement>(
+      'input:not([type="hidden"]), textarea, select, button[type="submit"]',
+    );
+    focusable?.focus({ preventScroll: true });
   });
 }

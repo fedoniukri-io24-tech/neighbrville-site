@@ -20,7 +20,11 @@ export function MobileSectionSnap() {
     const settle = () => {
       if (locking) return;
       const root = document.documentElement;
-      if (root.classList.contains("menu-open") || root.classList.contains("join-open")) {
+      if (
+        root.classList.contains("menu-open") ||
+        root.classList.contains("join-open") ||
+        root.classList.contains("join-focus")
+      ) {
         return;
       }
 

@@ -133,12 +133,12 @@ export function Hero() {
       {/* ───────────── Mobile ───────────── */}
       {/* Header space already lives in #hero — keep only a tight top gap here
           so the whole composition fits one svh. */}
-      <div className="page-x flex min-h-0 flex-1 flex-col justify-between overflow-visible pb-3 pt-30 lg:hidden">
+      <div className="page-x flex min-h-0 flex-1 flex-col justify-between overflow-visible pb-6 pt-[5.5rem] lg:hidden">
         <div className="page-shell flex min-h-0 flex-1 flex-col justify-between overflow-visible">
           {/* Headline + photos share one flex slot so justify-between
               can't stretch the gap between them. */}
           <div className="relative isolate shrink-0">
-            <h1 className="relative z-20 bg-chocolate text-left font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream">
+            <h1 className="hero-mobile-headline relative z-30 bg-chocolate text-left font-playfair text-[clamp(2.35rem,9.6vw,3.1rem)] font-normal uppercase leading-[0.86] tracking-[-0.055em] text-cream max-[740px]:pb-0.5">
               <span className="block whitespace-nowrap">
                 Become an <span className="italic">active</span>
               </span>
@@ -200,26 +200,26 @@ export function Hero() {
             </p>
           </div>
 
-          <div className="mt-2.5 flex shrink-0 flex-col items-center">
-            <p className="w-full max-w-[36ch] text-center font-inter text-[14px] leading-[1.28] text-ivory">
+          <div className="mt-1.5 flex shrink-0 flex-col items-center">
+            <p className="w-full max-w-[36ch] text-center font-inter text-[14px] leading-[1.26] text-ivory">
               Your neighborhood is full of places, people,
               <br />
               and initiatives to discover
             </p>
-            <p className="mt-1.5 text-center font-inter text-[11px] font-medium uppercase tracking-[0.07em] text-ivory">
+            <p className="mt-1 text-center font-inter text-[11px] font-medium uppercase tracking-[0.07em] text-ivory">
               NeighbrVille helps you find them
             </p>
 
-            <div className="mt-3.5 grid w-full grid-cols-2 gap-3.5">
+            <div className="mt-3 grid w-full grid-cols-2 gap-3.5">
               <Link
                 href="/?as=neighbr#join"
-                className="bg-cream px-3.5 py-[1.125rem] text-center font-inter text-[16px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
+                className="bg-cream px-3.5 py-[1.3125rem] text-center font-inter text-[16px] font-medium leading-none text-chocolate transition-opacity hover:opacity-90"
               >
                 Join as a Neighbr
               </Link>
               <Link
                 href="/?as=partner#join"
-                className="border border-cream px-3.5 py-[1.125rem] text-center font-inter text-[16px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
+                className="border border-cream px-3.5 py-[1.3125rem] text-center font-inter text-[16px] font-normal leading-none text-cream transition-colors hover:bg-cream/10"
               >
                 Become a Partner
               </Link>

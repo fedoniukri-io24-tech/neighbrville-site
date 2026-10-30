@@ -334,11 +334,11 @@ function MobileStack({
             tabIndex={motion.pointerEvents === "auto" ? 0 : -1}
             aria-pressed={isActive}
             aria-label={card.alt}
-            className={`absolute w-[73.1%] origin-top-left touch-manipulation bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
+            className={`absolute w-[78%] origin-top-left touch-manipulation bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
             style={{
               left: motion.left,
               top: motion.top,
-              height: "66%",
+              height: "74%",
               zIndex: motion.zIndex,
               opacity: motion.opacity,
               pointerEvents:
@@ -356,8 +356,8 @@ function MobileStack({
               }
             }}
           >
-            <div className="flex h-full flex-col px-[6.8cqw] pb-[5.5cqw] pt-[5.5cqw]">
-              <div className="relative h-[58cqw] w-full shrink-0 overflow-hidden">
+            <div className="flex h-full flex-col px-[8.5cqw] pb-[6.5cqw] pt-[7.5cqw]">
+              <div className="relative h-[60cqw] w-full shrink-0 overflow-hidden">
                 <Image
                   src={card.image}
                   alt={isActive ? card.alt : ""}
@@ -366,13 +366,13 @@ function MobileStack({
                   className="object-cover"
                 />
               </div>
-              <h3 className="mt-[8.5cqw] font-inter text-[4.5cqw] font-semibold uppercase leading-[1.1] tracking-[-0.01em]">
+              <h3 className="mt-[7cqw] font-inter text-[5.6cqw] font-semibold uppercase leading-[1.08] tracking-[-0.02em]">
                 {card.title}
               </h3>
-              <p className="mt-[1cqw] font-inter text-[4.2cqw] leading-[1.2]">
+              <p className="mt-[1.6cqw] font-inter text-[4.35cqw] leading-[1.22]">
                 {card.meta}
               </p>
-              <span className="mt-auto self-start rounded-[1.3cqw] border border-chocolate px-[2.4cqw] py-[1.2cqw] font-inter text-[3.8cqw] leading-none">
+              <span className="mt-auto self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
                 {card.tag}
               </span>
             </div>
@@ -539,7 +539,7 @@ export function ExperiencesSection() {
               })}
             </h2>
 
-            <div className="relative mt-[1.5svh] h-[clamp(400px,46svh,450px)] w-full shrink-0">
+            <div className="relative mt-[1.5svh] h-[clamp(440px,52svh,510px)] w-full shrink-0">
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}

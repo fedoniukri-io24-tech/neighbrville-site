@@ -91,6 +91,7 @@ const profileCopy: Record<JoinRole, ProfileCopy> = {
 };
 
 type DropdownFieldProps = {
+  menuId?: string;
   label: string;
   options: readonly string[];
   selected: string[];
@@ -100,7 +101,61 @@ type DropdownFieldProps = {
   boxed?: boolean;
 };
 
+function ProfileTextField({
+  id,
+  label,
+  name,
+  type = "text",
+  autoComplete,
+  value,
+  onChange,
+  multiline = false,
+  rows = 2,
+}: {
+  id: string;
+  label: string;
+  name: string;
+  type?: string;
+  autoComplete?: string;
+  value: string;
+  onChange: (value: string) => void;
+  multiline?: boolean;
+  rows?: number;
+}) {
+  const fieldClassName =
+    "mt-2 w-full border-0 border-b border-chocolate/55 bg-transparent pb-2.5 font-inter text-[16px] text-chocolate outline-none transition-colors duration-200 focus:border-chocolate";
+
+  return (
+    <div>
+      <label htmlFor={id} className="block font-inter text-[15px] font-medium text-chocolate">
+        {label}
+      </label>
+      {multiline ? (
+        <textarea
+          id={id}
+          name={name}
+          rows={rows}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className={`${fieldClassName} resize-none`}
+        />
+      ) : (
+        <input
+          id={id}
+          name={name}
+          type={type}
+          autoComplete={autoComplete}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className={fieldClassName}
+        />
+      )}
+    </div>
+  );
+}
+
 function DropdownField({
+  menuId,
   label,
   options,
   selected,
@@ -122,15 +177,18 @@ function DropdownField({
 
   return (
     <div
+      id={menuId}
       className={
         open && boxed
-          ? "border border-chocolate/45 px-4 py-3 sm:px-5"
-          : undefined
+          ? "border border-chocolate px-4 py-3 transition-colors duration-200 sm:px-5"
+          : "transition-opacity duration-200"
       }
     >
       <div
-        className={`flex items-start justify-between gap-3 ${
-          open ? "pb-3" : "border-b border-chocolate/45 pb-2.5"
+        className={`flex items-start justify-between gap-3 transition-colors duration-200 ${
+          open
+            ? "border-b border-chocolate pb-3"
+            : "border-b border-chocolate pb-2.5"
         }`}
       >
         <button
@@ -140,10 +198,14 @@ function DropdownField({
           onClick={onToggle}
           className="min-w-0 flex-1 text-left font-inter text-[15px] text-chocolate"
         >
-          <span className="block text-chocolate/80">{label}</span>
+          <span className="block font-medium text-chocolate">{label}</span>
           {!open && hasSelection ? (
             <span className="mt-1 block text-[13px] leading-[1.35] text-chocolate">
               {selected.join(", ")}
+            </span>
+          ) : !open ? (
+            <span className="mt-1 block text-[13px] text-chocolate/55">
+              Tap to select
             </span>
           ) : null}
         </button>
@@ -151,15 +213,15 @@ function DropdownField({
         {open ? (
           <span
             aria-hidden
-            className="inline-block shrink-0 rotate-180 pt-0.5 text-[12px] leading-none text-chocolate"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center border border-chocolate text-[14px] leading-none text-chocolate"
           >
-            ▾
+            ▴
           </span>
         ) : hasSelection ? (
           <button
             type="button"
             onClick={onToggle}
-            className="shrink-0 pt-0.5 font-inter text-[13px] uppercase tracking-[0.08em] text-chocolate underline decoration-[1px] underline-offset-[4px] transition-opacity hover:opacity-70"
+            className="shrink-0 border border-chocolate px-2 py-1 font-inter text-[11px] uppercase tracking-[0.08em] text-chocolate transition-opacity hover:opacity-70"
           >
             Edit
           </button>
@@ -168,34 +230,44 @@ function DropdownField({
             type="button"
             aria-label={`Open ${label}`}
             onClick={onToggle}
-            className="shrink-0 pt-0.5 text-[12px] leading-none text-chocolate transition-opacity hover:opacity-70"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center border border-chocolate text-[14px] leading-none text-chocolate transition-opacity hover:opacity-70"
           >
             ▾
           </button>
         )}
       </div>
 
-      {open ? (
-        <>
+      <div
+        className={`join-dropdown-panel grid ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
           <ul
             id={listId}
             role="listbox"
             aria-multiselectable
-            className={boxed ? undefined : "border-t border-chocolate/45"}
+            aria-hidden={!open}
+            className={
+              boxed
+                ? "border-x border-b border-chocolate"
+                : "border-x border-b border-chocolate bg-cream"
+            }
           >
             {options.map((option) => {
               const checked = selected.includes(option);
               return (
                 <li
                   key={option}
-                  className="border-b border-chocolate/45 last:border-b-0"
+                  className="border-b border-chocolate/35 last:border-b-0"
                 >
                   <button
                     type="button"
                     role="option"
                     aria-selected={checked}
+                    tabIndex={open ? 0 : -1}
                     onClick={() => toggleOption(option)}
-                    className="flex w-full items-center justify-between gap-4 py-3.5 text-left font-inter text-[15px] leading-[1.25] text-chocolate transition-opacity hover:opacity-70"
+                    className="flex w-full items-center justify-between gap-4 py-3.5 text-left font-inter text-[15px] leading-[1.25] text-chocolate transition-colors duration-150 hover:bg-chocolate/[0.04] active:bg-chocolate/[0.07]"
                   >
                     <span>{option}</span>
                     {checked ? (
@@ -212,8 +284,8 @@ function DropdownField({
             })}
           </ul>
 
-          <div className="mt-4 flex items-center justify-between gap-4 border-t border-chocolate/45 pt-4">
-            <p className="font-inter text-[12px] leading-[1.3] text-chocolate/65">
+          <div className="flex items-center justify-between gap-4 border-x border-b border-chocolate px-1 py-4">
+            <p className="font-inter text-[12px] leading-[1.3] text-chocolate/75">
               {selected.length === 0
                 ? "Select one or more"
                 : `${selected.length} selected`}
@@ -226,8 +298,8 @@ function DropdownField({
               Done
             </button>
           </div>
-        </>
-      ) : null}
+        </div>
+      </div>
     </div>
   );
 }
@@ -334,23 +406,33 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
   const interestsOpen = openMenu === "interests";
   const languagesOpen = openMenu === "languages";
   const categoriesOpen = openMenu === "categories";
-  const menuOpen = openMenu !== null;
 
   useEffect(() => {
     if (!completed) return;
     scrollToJoinPanel(document.getElementById("join-profile-done"), {
-      focus: true,
+      align: "nearest",
+      behavior: "smooth",
     });
   }, [completed]);
+
+  function toggleMenu(menu: typeof openMenu) {
+    setOpenMenu((current) => {
+      const next = current === menu ? null : menu;
+      if (next) {
+        window.requestAnimationFrame(() => {
+          document
+            .getElementById(`join-menu-${next}`)
+            ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        });
+      }
+      return next;
+    });
+  }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setOpenMenu(null);
     setCompleted(true);
-  }
-
-  function toggleMenu(menu: typeof openMenu) {
-    setOpenMenu((current) => (current === menu ? null : menu));
   }
 
   if (completed) {
@@ -414,11 +496,12 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
       <form
         id="join-profile-form"
         onSubmit={onSubmit}
-        className="relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 xl:px-10 xl:py-11"
+        className="join-step-enter relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 xl:px-10 xl:py-11"
       >
         {copy.fields === "neighbr" ? (
           <div className="space-y-8 sm:space-y-9">
             <DropdownField
+              menuId="join-menu-interests"
               label="Interests"
               options={INTERESTS}
               selected={interests}
@@ -426,56 +509,36 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
               open={interestsOpen}
               onToggle={() => toggleMenu("interests")}
             />
-            {!interestsOpen ? (
-              <>
-                <div>
-                  <label
-                    htmlFor={locationId}
-                    className="block font-inter text-[15px] text-chocolate/80"
-                  >
-                    Location (city and neighborhoods)
-                  </label>
-                  <input
-                    id={locationId}
-                    name="location"
-                    type="text"
-                    autoComplete="address-level2"
-                    value={location}
-                    onChange={(event) => setLocation(event.target.value)}
-                    className="mt-2 w-full border-0 border-b border-chocolate/45 bg-transparent pb-2.5 font-inter text-[16px] text-chocolate outline-none transition-colors focus:border-chocolate"
-                  />
-                </div>
-                <DropdownField
-                  label="Languages to practice"
-                  options={LANGUAGES}
-                  selected={languages}
-                  onChange={setLanguages}
-                  open={languagesOpen}
-                  onToggle={() => toggleMenu("languages")}
-                />
-              </>
-            ) : null}
+            <ProfileTextField
+              id={locationId}
+              label="Location (city and neighborhoods)"
+              name="location"
+              autoComplete="address-level2"
+              value={location}
+              onChange={setLocation}
+            />
+            <DropdownField
+              menuId="join-menu-languages"
+              label="Languages to practice"
+              options={LANGUAGES}
+              selected={languages}
+              onChange={setLanguages}
+              open={languagesOpen}
+              onToggle={() => toggleMenu("languages")}
+            />
           </div>
         ) : (
           <div className="space-y-7 sm:space-y-8">
-            <div>
-              <label
-                htmlFor={locationId}
-                className="block font-inter text-[15px] text-chocolate/80"
-              >
-                Address or neighbourhood
-              </label>
-              <input
-                id={locationId}
-                name="address"
-                type="text"
-                autoComplete="street-address"
-                value={address}
-                onChange={(event) => setAddress(event.target.value)}
-                className="mt-2 w-full border-0 border-b border-chocolate/45 bg-transparent pb-2.5 font-inter text-[16px] text-chocolate outline-none transition-colors focus:border-chocolate"
-              />
-            </div>
+            <ProfileTextField
+              id={locationId}
+              label="Address or neighbourhood"
+              name="address"
+              autoComplete="street-address"
+              value={address}
+              onChange={setAddress}
+            />
             <DropdownField
+              menuId="join-menu-categories"
               label="Choose your categories / tags"
               options={CATEGORIES}
               selected={categories}
@@ -484,59 +547,38 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
               boxed={categoriesOpen}
               onToggle={() => toggleMenu("categories")}
             />
-            {!categoriesOpen ? (
-              <>
-                <div>
-                  <label
-                    htmlFor={socialId}
-                    className="block font-inter text-[15px] text-chocolate/80"
-                  >
-                    Social media links
-                  </label>
-                  <input
-                    id={socialId}
-                    name="socials"
-                    type="text"
-                    autoComplete="url"
-                    value={socials}
-                    onChange={(event) => setSocials(event.target.value)}
-                    className="mt-2 w-full border-0 border-b border-chocolate/45 bg-transparent pb-2.5 font-inter text-[16px] text-chocolate outline-none transition-colors focus:border-chocolate"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor={aboutId}
-                    className="block font-inter text-[15px] text-chocolate/80"
-                  >
-                    Tell us about what you do
-                  </label>
-                  <textarea
-                    id={aboutId}
-                    name="about"
-                    rows={2}
-                    value={about}
-                    onChange={(event) => setAbout(event.target.value)}
-                    className="mt-2 w-full resize-none border-0 border-b border-chocolate/45 bg-transparent pb-2.5 font-inter text-[16px] text-chocolate outline-none transition-colors focus:border-chocolate"
-                  />
-                </div>
-              </>
-            ) : null}
+            <ProfileTextField
+              id={socialId}
+              label="Social media links"
+              name="socials"
+              type="text"
+              autoComplete="url"
+              value={socials}
+              onChange={setSocials}
+            />
+            <ProfileTextField
+              id={aboutId}
+              label="Tell us about what you do"
+              name="about"
+              value={about}
+              onChange={setAbout}
+              multiline
+              rows={2}
+            />
           </div>
         )}
 
-        {!menuOpen ? (
-          <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-            <button
-              type="submit"
-              className="text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.55rem,2.2vw,2.15rem)]"
-            >
-              Complete my profile
-            </button>
-            <p className="max-w-[18ch] font-inter text-[12px] leading-[1.3] text-chocolate/70 sm:text-right">
-              You can update your details anytime by email
-            </p>
-          </div>
-        ) : null}
+        <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+          <button
+            type="submit"
+            className="text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.55rem,2.2vw,2.15rem)]"
+          >
+            Complete my profile
+          </button>
+          <p className="max-w-[18ch] font-inter text-[12px] leading-[1.3] text-chocolate/70 sm:text-right">
+            You can update your details anytime by email
+          </p>
+        </div>
       </form>
     </ProfileShell>
   );

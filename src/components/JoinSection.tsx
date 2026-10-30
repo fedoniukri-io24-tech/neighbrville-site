@@ -12,7 +12,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { scrollToJoinPanel, type JoinRole, type JoinStep } from "@/lib/join";
+import { scrollToJoinPanel, isValidEmail, type JoinRole, type JoinStep } from "@/lib/join";
 
 import { JoinProfileStep } from "./JoinProfileStep";
 
@@ -86,6 +86,8 @@ function Field({
   autoComplete,
   value,
   onChange,
+  onBlur,
+  error,
 }: {
   id: string;
   label: string;
@@ -94,26 +96,50 @@ function Field({
   autoComplete: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
+  error?: string | null;
 }) {
+  const errorId = `${id}-error`;
+
   return (
-    <div className="relative h-[calc(18*var(--u))] border-b border-chocolate/40 transition-colors focus-within:border-chocolate lg:h-[calc(26*var(--u))]">
-      <input
-        id={id}
-        name={name}
-        type={type}
-        required
-        autoComplete={autoComplete}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder=" "
-        className="peer absolute inset-0 h-full w-full border-0 bg-transparent p-0 font-inter text-[16px] text-chocolate outline-none"
-      />
-      <label
-        htmlFor={id}
-        className="pointer-events-none absolute left-0 top-1/2 origin-left -translate-y-1/2 font-inter text-chocolate/70 transition-all duration-200 ease-out text-[length:max(10px,calc(6.5*var(--u)))] peer-focus:top-0 peer-focus:-translate-y-[125%] peer-focus:scale-[0.85] peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:-translate-y-[125%] peer-[:not(:placeholder-shown)]:scale-[0.85] lg:text-[length:max(11px,calc(10*var(--u)))]"
+    <div>
+      <div
+        className={`relative h-[calc(18*var(--u))] border-b transition-colors lg:h-[calc(26*var(--u))] ${
+          error
+            ? "border-chocolate"
+            : "border-chocolate/40 focus-within:border-chocolate"
+        }`}
       >
-        {label}
-      </label>
+        <input
+          id={id}
+          name={name}
+          type={type}
+          required
+          autoComplete={autoComplete}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onBlur={onBlur}
+          placeholder=" "
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
+          className="peer absolute inset-0 h-full w-full border-0 bg-transparent p-0 font-inter text-[16px] text-chocolate outline-none"
+        />
+        <label
+          htmlFor={id}
+          className="pointer-events-none absolute left-0 top-1/2 origin-left -translate-y-1/2 font-inter text-chocolate/70 transition-all duration-200 ease-out text-[length:max(10px,calc(6.5*var(--u)))] peer-focus:top-0 peer-focus:-translate-y-[125%] peer-focus:scale-[0.85] peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:-translate-y-[125%] peer-[:not(:placeholder-shown)]:scale-[0.85] lg:text-[length:max(11px,calc(10*var(--u)))]"
+        >
+          {label}
+        </label>
+      </div>
+      {error ? (
+        <p
+          id={errorId}
+          role="alert"
+          className="mt-2 font-inter text-[13px] leading-[1.3] text-chocolate"
+        >
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -124,7 +150,9 @@ function JoinSectionInner() {
   const [step, setStep] = useState<JoinStep>("waitlist");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const didScrollWaitlistRef = useRef(false);
   const nameId = useId();
   const emailId = useId();
   const expanded = role !== null;
@@ -138,23 +166,55 @@ function JoinSectionInner() {
     setStep("waitlist");
   }, [searchParams]);
 
-  // Pause scroll-snap while the join panel is open (avoids fight with smooth scroll)
   useEffect(() => {
     document.documentElement.classList.toggle("join-open", expanded);
-    return () => document.documentElement.classList.remove("join-open");
+    return () => {
+      document.documentElement.classList.remove("join-open");
+      document.documentElement.classList.remove("join-focus");
+    };
   }, [expanded]);
 
   useEffect(() => {
     if (!expanded) return;
-    // Match expand transition (500ms) so scroll lands after height settles.
+    const section = document.getElementById("join");
+    if (!section) return;
+
+    const onFocusIn = (event: FocusEvent) => {
+      if (section.contains(event.target as Node)) {
+        document.documentElement.classList.add("join-focus");
+      }
+    };
+
+    const onFocusOut = () => {
+      window.requestAnimationFrame(() => {
+        if (!section.contains(document.activeElement)) {
+          document.documentElement.classList.remove("join-focus");
+        }
+      });
+    };
+
+    section.addEventListener("focusin", onFocusIn);
+    section.addEventListener("focusout", onFocusOut);
+    return () => {
+      section.removeEventListener("focusin", onFocusIn);
+      section.removeEventListener("focusout", onFocusOut);
+      document.documentElement.classList.remove("join-focus");
+    };
+  }, [expanded]);
+
+  useEffect(() => {
+    if (!expanded) {
+      didScrollWaitlistRef.current = false;
+      return;
+    }
+    if (!role || step !== "waitlist" || didScrollWaitlistRef.current) return;
+    didScrollWaitlistRef.current = true;
     const timer = window.setTimeout(() => {
-      const target =
-        step === "profile"
-          ? document.getElementById("join-profile-form")
-          : panelRef.current ??
-            document.getElementById("join-waitlist-form");
-      scrollToJoinPanel(target, { focus: true });
-    }, 520);
+      scrollToJoinPanel(panelRef.current, {
+        align: "nearest",
+        behavior: "smooth",
+      });
+    }, 420);
     return () => window.clearTimeout(timer);
   }, [expanded, role, step]);
 
@@ -165,19 +225,27 @@ function JoinSectionInner() {
         return null;
       }
       setStep("waitlist");
+      setEmailError(null);
       return next;
     });
   }
 
   function onWaitlistSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isValidEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    setEmailError(null);
     setStep("profile");
   }
 
   return (
     <section
       id="join"
-      className="snap-block join-section relative w-full overflow-hidden text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)]"
+      className={`snap-block join-section relative w-full overflow-hidden text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)] ${
+        expanded ? "join-section--open" : ""
+      }`}
     >
       {/*
         Background photo. It is sized to the fully opened section, so it never
@@ -276,7 +344,7 @@ function JoinSectionInner() {
 
         {/* ───────── Expanding panel ───────── */}
         <div
-          className={`grid transition-[grid-template-rows] duration-500 ease-out motion-reduce:transition-none ${
+          className={`join-panel-expand grid motion-reduce:transition-none ${
             expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
           }`}
         >
@@ -299,7 +367,7 @@ function JoinSectionInner() {
               ) : null}
 
               {copy && step === "waitlist" ? (
-                <div className="grid min-h-dvh grid-cols-1 lg:min-h-screen lg:grid-cols-2 lg:items-stretch">
+                <div className="join-step-enter grid min-h-dvh grid-cols-1 lg:min-h-screen lg:grid-cols-2 lg:items-stretch">
                   {/* Left — full-height cream like Value section */}
                   <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:min-h-screen lg:px-10 lg:py-16 xl:px-14 xl:py-20">
                     <h3 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
@@ -348,9 +416,22 @@ function JoinSectionInner() {
                           name="email"
                           type="email"
                           autoComplete="email"
-                          value={email}
-                          onChange={setEmail}
-                        />
+                        value={email}
+                        onChange={(value) => {
+                          setEmail(value);
+                          if (emailError) setEmailError(null);
+                        }}
+                        onBlur={() => {
+                          if (!email.trim()) {
+                            setEmailError(null);
+                            return;
+                          }
+                          if (!isValidEmail(email)) {
+                            setEmailError("Please enter a valid email address.");
+                          }
+                        }}
+                        error={emailError}
+                      />
                       </div>
 
                       <div className="mt-[calc(25*var(--u))] flex items-center justify-between gap-4 lg:mt-12">

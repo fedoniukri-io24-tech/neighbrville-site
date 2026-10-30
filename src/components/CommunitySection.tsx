@@ -68,6 +68,8 @@ function InteractivePhoto({
   shadow?: string;
 }) {
   const [active, setActive] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const lifted = active || hovered;
 
   return (
     <button
@@ -75,9 +77,13 @@ function InteractivePhoto({
       className={`absolute overflow-hidden bg-[#3a2416] transition-transform duration-300 ease-out ${shadow} ${className ?? ""}`}
       style={{
         ...style,
-        zIndex: active ? 40 : 1,
-        transform: active ? "scale(1.22)" : "scale(1)",
+        zIndex: lifted ? 40 : 1,
+        transform: lifted ? "scale(1.22)" : "scale(1)",
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       onClick={() => setActive((open) => !open)}
       aria-pressed={active}
       aria-label={alt}
@@ -94,7 +100,7 @@ export function CommunitySection() {
       className="relative snap-block overflow-x-clip bg-chocolate text-cream lg:z-10"
     >
       <div className="page-shell page-x hidden lg:pt-20 lg:block">
-        <div className="relative aspect-[1440/860] w-full overflow-hidden">
+        <div className="relative aspect-[1440/860] w-full overflow-hidden lg:overflow-visible">
           {photos.map((photo) => (
             <InteractivePhoto
               key={photo.src}

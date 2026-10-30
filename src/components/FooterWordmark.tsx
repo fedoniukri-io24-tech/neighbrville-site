@@ -58,7 +58,7 @@ export function FooterWordmark() {
   return (
     <div
       ref={wrapRef}
-      className="relative z-0 mt-4 w-full overflow-hidden leading-none"
+      className="relative z-0 mt-8 w-full overflow-hidden leading-none lg:mt-10"
       style={{ height: box.height || undefined }}
     >
       <p
