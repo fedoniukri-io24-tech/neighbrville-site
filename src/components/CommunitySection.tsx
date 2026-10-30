@@ -97,9 +97,9 @@ export function CommunitySection() {
   return (
     <section
       id="village"
-      className="relative snap-block overflow-x-clip bg-chocolate text-cream lg:z-10"
+      className="relative snap-block overflow-x-clip bg-chocolate text-cream max-lg:pt-4 lg:relative lg:z-10 lg:scroll-mt-8"
     >
-      <div className="page-shell page-x hidden lg:pt-20 lg:block">
+      <div className="page-shell page-x hidden lg:pt-28 lg:block">
         <div className="relative aspect-[1440/860] w-full overflow-hidden lg:overflow-visible">
           {photos.map((photo) => (
             <InteractivePhoto
@@ -147,7 +147,7 @@ export function CommunitySection() {
         </div>
       </div>
 
-      <div className="overflow-x-clip pb-10 pt-6 lg:hidden">
+      <div className="overflow-x-clip pb-10 pt-10 lg:hidden">
         {/* Top photo cluster — reserved height so absolute photos can't
             collide with the copy below even when they scale up. */}
         <div className="relative z-0 mx-auto aspect-[440/240] w-full max-w-[440px]">

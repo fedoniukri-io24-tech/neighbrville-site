@@ -187,7 +187,7 @@ function headlineLineClass(
 function ExperienceMarquee() {
   return (
     <div
-      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate py-2 lg:relative lg:z-50 lg:py-2.5"
+      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate lg:relative lg:z-50"
       aria-hidden
     >
       <div className="experience-marquee-track flex w-max animate-marquee items-center whitespace-nowrap will-change-transform">
@@ -507,7 +507,7 @@ export function ExperiencesSection() {
         }
       >
         <div className="page-shell page-x mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
-          <div className="flex flex-col items-stretch overflow-visible pb-2 pt-[3svh] text-left">
+          <div className="flex flex-col items-stretch overflow-visible pb-10 pt-[3svh] text-left">
             <p className="shrink-0 font-inter text-[2.56cqw] uppercase leading-none text-ivory">
               Find something that feels like you
             </p>
@@ -567,7 +567,7 @@ export function ExperiencesSection() {
               </Link>
             </div>
 
-            <div className="mt-6 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
+            <div className="mt-10 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
               <ExperienceMarquee />
             </div>
           </div>
@@ -628,7 +628,7 @@ export function ExperiencesSection() {
               })}
         </h2>
 
-        <div className="page-shell relative z-0 w-full self-start overflow-visible [container-type:inline-size]">
+        <div className="page-shell relative z-0 w-full self-start overflow-visible pb-[clamp(2rem,5vh,3.5rem)] [container-type:inline-size]">
           <div
             className="relative"
             style={{ height: "max(56.4cqw, 640px)" }}

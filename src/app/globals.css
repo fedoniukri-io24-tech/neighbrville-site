@@ -12,8 +12,9 @@
   /* Matches Community side-photo inset (left ~1.2% of frame) */
   --page-gutter-x: clamp(1.25rem, 1.2vw, 1.75rem);
   --page-max: 1440px;
-  /* Fixed header spacer: py-3 + h-10, then sm / md / lg */
-  --header-space: 4rem;
+  --header-top-inset: 10px;
+  /* Fixed header: logo row + vertical padding + top inset */
+  --header-space: calc(4rem + var(--header-top-inset));
   /* svh stays still while the mobile URL bar shows and hides */
   --join-first-height: 100svh;
   --join-panel-height: 100dvh;
@@ -25,19 +26,19 @@
 
 @media (min-width: 640px) {
   :root {
-    --header-space: 4.25rem;
+    --header-space: calc(4.25rem + var(--header-top-inset));
   }
 }
 
 @media (min-width: 768px) {
   :root {
-    --header-space: 3.5rem;
+    --header-space: calc(3.5rem + var(--header-top-inset));
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --header-space: 3rem;
+    --header-space: calc(3rem + var(--header-top-inset));
     --join-first-height: 100dvh;
     --join-photo-height: calc(var(--join-first-height) + 220dvh);
   }
@@ -87,6 +88,7 @@ html {
 @media (min-width: 1024px) {
   html {
     scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--header-space);
   }
 
   html.join-open,
@@ -108,10 +110,10 @@ html {
     scroll-snap-stop: always;
   }
 
-  /* Last block is shorter than the screen. Align its bottom so the page
-     background doesn't show as a strip under the wordmark. */
+  /* Last block: snap to bottom edge; extra scroll padding keeps wordmark off the chrome */
   footer.snap-block {
     scroll-snap-align: end;
+    scroll-padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -168,6 +170,18 @@ footer .font-playfair {
   text-box-edge: cap alphabetic;
   text-box-trim: trim-both;
   transform: translateY(-0.04em);
+}
+
+.experience-marquee-band {
+  padding-block: clamp(0.75rem, 2.2vh, 1.125rem);
+  margin-block: clamp(1.5rem, 4.5vh, 2.75rem);
+}
+
+@media (min-width: 1024px) {
+  .experience-marquee-band {
+    padding-block: clamp(0.875rem, 1.8vh, 1.375rem);
+    margin-block: clamp(2rem, 5vh, 3.25rem) clamp(1rem, 2.5vh, 1.75rem);
+  }
 }
 
 .animate-marquee {

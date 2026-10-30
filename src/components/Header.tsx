@@ -48,7 +48,7 @@ export function Header() {
 
   return (
     <>
-      <header className="page-x fixed inset-x-0 top-0 z-[200] bg-chocolate py-3.5 sm:py-3.5 lg:py-2">
+      <header className="page-x fixed inset-x-0 top-0 z-[200] bg-chocolate pb-3.5 pt-[calc(0.875rem+var(--header-top-inset))] sm:pb-3.5 sm:pt-[calc(0.875rem+var(--header-top-inset))] lg:pb-2 lg:pt-[calc(0.5rem+var(--header-top-inset))]">
         <div className="page-shell relative flex items-center justify-between gap-2 sm:gap-4">
           <Link
             href="/#hero"
